@@ -21,6 +21,15 @@ __pycache__/
 .venv/
 venv/
 
+# Ambientes web (Replit cria estes dentro do projeto)
+.config/
+.cache/
+.upm/
+.pythonlibs/
+.local/
+.breakpoints
+replit.nix
+
 # Editores / SO
 .claude/
 .vscode/

@@ -1,0 +1,15 @@
+# Configuracao do Replit. O botao Run executa a verificacao do ambiente,
+# que NAO chama a API (a chave e compartilhada pela turma).
+#
+# Esta e uma conveniencia: o caminho documentado do workshop e digitar os
+# comandos no painel Shell, que funciona independente deste arquivo. Se o
+# Replit reconfigurar o Run ao importar o repositorio, use o Shell.
+#
+# A chave da API vai em Tools -> Secrets, com o nome AI_GATEWAY_API_KEY.
+# NAO crie um .env.local no Replit: Secrets nao entra em forks nem no
+# historico do Git, e um arquivo entra.
+
+run = "python3 verificar.py"
+entrypoint = "README.md"
+
+hidden = [".config", ".cache", ".upm", ".pythonlibs", "__pycache__"]

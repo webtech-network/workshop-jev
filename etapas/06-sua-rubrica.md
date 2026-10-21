@@ -128,6 +128,12 @@ que está errado é **onde cada nível corta**. O modelo é severo demais, entã
 **afrouxe** o que ele exige de cada nível: o que hoje é descrito no nível 4
 deveria estar no nível 3.
 
+> 🤖 **Vai pedir ajuda à IA aqui?** Pode — mas **depois** de escrever a sua
+> hipótese, nunca antes, e nunca deixando ela tocar no `evaluate.py`, no
+> `compare.py` ou no `sample.py`: se o pipeline mudar entre o "antes" e o
+> "depois", os dois números deixam de ser comparáveis. O [IA.md](../IA.md) tem
+> as regras e um prompt pronto para reescrever âncoras.
+
 ### Regras técnicas (quebrar qualquer uma destas estraga a medição)
 
 1. **Exatamente 6 âncoras** em cada `criteria`. A escala 0–200 em faixas de 40
@@ -137,11 +143,13 @@ deveria estar no nível 3.
 4. **JSON válido.** Vírgula sobrando é o erro nº 1. Valide:
 
 ```bash
-python3 -c "import json;r=json.load(open('rubric.json'));print('JSON ok |', {c: len(v['criteria']) for c,v in r['competencias'].items()})"
+python3 verificar.py
 ```
 
-Esperado: `JSON ok | {'c1': 6, 'c2': 6, 'c3': 6, 'c4': 6, 'c5': 6}`. Se algum
-número não for 6, conserte antes de gastar chamadas.
+A seção 3 confere o JSON e a contagem de âncoras. Esperado:
+`6 ancoras em cada competencia {'c1': 6, ...}`. Se algum número não for 6,
+conserte **antes** de gastar chamadas — é o erro mais comum quando a rubrica
+foi reescrita com ajuda de IA.
 
 ### Ajuste o limiar também
 

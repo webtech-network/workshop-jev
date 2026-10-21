@@ -1,7 +1,12 @@
-# SETUP — faça isto antes do workshop
+# SETUP — instalação local
 
 Tempo estimado: **20 minutos**. Ao final há um comando de verificação; se ele
 passar, você está pronto.
+
+> 🌐 **Não quer instalar nada?** O workshop inteiro roda no navegador, pelo
+> Replit ou pelo GitHub Codespaces, com os mesmos comandos e os mesmos
+> exercícios: **[SETUP-WEB.md](SETUP-WEB.md)**. É a trilha recomendada para PC
+> de laboratório ou máquina sem permissão de instalar programas.
 
 Se travar em qualquer passo, chegue 15 minutos antes do workshop — resolvemos
 juntos. Não deixe para a hora.
@@ -222,14 +227,16 @@ git status --short
 
 ## 6. Verificação final
 
-Rode os dois comandos abaixo. Nenhum deles chama a API nem gasta nada.
+Um comando, que não chama a API nem gasta nada:
 
 ```bash
-python3 evaluate.py --dry-run
+python3 verificar.py
 ```
 
-Esperado: um JSON grande na tela, terminando com
-`[dry-run] 100 redacoes seriam avaliadas; nenhuma chamada feita.`
+Esperado: `Ambiente pronto`, com as 12 checagens. Se a chave ainda não chegou,
+aparece um aviso em vez de erro — é normal antes do dia.
+
+Para confirmar que o pipeline de análise roda:
 
 ```bash
 python3 compare.py --cache referencia/resultados-referencia-v1.jsonl --sample sample.jsonl

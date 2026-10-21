@@ -9,30 +9,24 @@
 
 ## 1.1 Checagem rápida (todos juntos)
 
-Rode os três comandos e compare com o colega ao lado:
+Um comando só, igual nas três trilhas:
 
 ```bash
-python3 --version
+python3 verificar.py
 ```
 
-```bash
-git config user.email
-```
+Ele confere Python, os arquivos do workshop, se a rubrica é válida, se a chave
+está onde deveria e — o mais importante — se o `.gitignore` está protegendo a
+chave.
 
-```bash
-git check-ignore -v .env.local
-```
+Esperado: `Ambiente pronto`. Se a chave ainda não chegou, aparece um aviso e
+tudo bem: 5 das 7 etapas rodam sem ela.
 
-O que esperar:
+**Se a checagem 5 (`.env.local esta no .gitignore`) falhar, pare e avise.** É o
+único erro desta etapa com consequência fora da sua máquina.
 
-1. Python 3.10 ou maior.
-2. O e-mail da sua conta do GitHub.
-3. Uma linha citando `.gitignore` — prova de que a chave não vai ser comitada.
-
-Se o terceiro comando não imprimir nada, **pare e avise**. Esse é o único erro
-desta etapa que tem consequência fora da sua máquina.
-
-Não passou algum? Volte ao [SETUP.md](../SETUP.md).
+Não passou? Volte ao [SETUP-WEB.md](../SETUP-WEB.md) (Replit/Codespaces) ou ao
+[SETUP.md](../SETUP.md) (local).
 
 ---
 
@@ -70,13 +64,22 @@ Confira os seus remotos:
 git remote -v
 ```
 
-Se o `gh repo fork --clone` fez o trabalho, você vê `origin` (seu fork) e
-`upstream` (o original). Se só aparecer `origin` apontando para o seu fork,
-adicione o upstream:
+O `origin` tem de ser **o seu fork** — a URL precisa ter o seu usuário, não
+`webtech-network`. Se aparecer `webtech-network` ali, você abriu o repositório
+errado: volte e faça o fork antes (as duas trilhas web explicam isso no
+[SETUP-WEB.md](../SETUP-WEB.md)).
+
+Se não houver `upstream`, adicione:
 
 ```bash
 git remote add upstream https://github.com/webtech-network/workshop-jev.git
 ```
+
+> **Trilhas web:** no Codespaces o Git já vem autenticado, então os comandos
+> abaixo funcionam direto. No Replit, o push exige conectar a sua conta do
+> GitHub — e, se isso der trabalho, você entrega o pull request pela interface
+> do GitHub, sem Git nenhum. O [SETUP-WEB.md](../SETUP-WEB.md#entregar-o-pull-request-sem-usar-git)
+> mostra como, e a [etapa 7](07-pull-request.md) retoma o assunto.
 
 ---
 
@@ -164,12 +167,11 @@ Um pull request com números e um parágrafo de raciocínio é o que diferencia
 
 ## Checklist
 
-- [ ] `python3 --version` → 3.10+
-- [ ] `git config user.email` → o e-mail do seu GitHub
-- [ ] `git check-ignore -v .env.local` → imprime uma linha
-- [ ] `.env.local` existe e tem a chave do instrutor
+- [ ] `python3 verificar.py` → `Ambiente pronto`
+- [ ] A chave está no lugar certo da minha trilha (Secrets no Replit, `.env.local` nas outras)
+- [ ] O `origin` aponta para **o meu fork**, não para `webtech-network`
 - [ ] Branch `rubrica-SEU-USUARIO` criada
-- [ ] Primeiro commit empurrado e visível no GitHub
+- [ ] Primeiro commit empurrado e visível no GitHub — ou sei que vou entregar pela interface web
 - [ ] `python3 compare.py --cache referencia/resultados-referencia-v1.jsonl --sample sample.jsonl` roda
 
 **Próxima:** [Etapa 2 — O conceito](02-conceito.md)

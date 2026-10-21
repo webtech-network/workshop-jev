@@ -89,6 +89,15 @@ Quase ninguém escreve.
 
 ## 7.3 Comite
 
+> **Nas trilhas web, você pode pular o Git inteiro.** A interface do GitHub faz
+> branch, commit e pull request de uma vez: abra o seu fork, clique no arquivo,
+> no ícone de lápis, edite, e em **Commit changes** escolha **"Create a new
+> branch for this commit and start a pull request"**. Pule para a
+> [seção 7.4](#74-empurre-e-abra-o-pr) e use só a parte do `gh`/navegador.
+>
+> Esse caminho funciona sempre, inclusive se a conexão do Replit com o GitHub
+> der trabalho. O resto desta seção é para quem está usando Git.
+
 Veja exatamente o que mudou na rubrica:
 
 ```bash
@@ -126,7 +135,11 @@ gh pr create --title "Rubrica de SEU-USUARIO: C3 contavel + limiar 0,70" --body-
 Ele vai perguntar para onde enviar — escolha
 `webtech-network/workshop-jev` na branch `main`.
 
-Sem o `gh`: abra o seu fork no navegador. O GitHub mostra uma faixa amarela
+> **Num Codespace aberto a partir do fork**, o `gh pr create` às vezes não
+> enxerga o repositório de origem e reclama. Não insista: use o caminho do
+> navegador abaixo, que é o mesmo pull request.
+
+Pelo navegador (funciona em qualquer trilha): abra o seu fork. O GitHub mostra uma faixa amarela
 com **"Compare & pull request"**. Clique, confirme que a comparação é
 `webtech-network/workshop-jev: main ← SEU-USUARIO/workshop-jev:
 rubrica-SEU-USUARIO`, cole o `NOTAS.md` na descrição e envie.
@@ -151,8 +164,12 @@ Revisar é metade do trabalho de engenharia, e é a parte que ninguém treina.
 
 ## 7.6 Depois do workshop
 
-A chave do instrutor será **revogada** — ela existe só para o dia. Para
-continuar:
+A chave do instrutor será **revogada** — ela existe só para o dia. E, se você
+usou uma trilha web, lembre que o ambiente é descartável: **o que não foi para
+o GitHub, você perde.** Confira que o seu pull request está lá antes de fechar
+a aba.
+
+Para continuar:
 
 **Sua própria chave.** Crie uma conta na [Vercel](https://vercel.com), vá em
 **AI Gateway → API Keys** e gere uma. Ponha no seu `.env.local`. O custo real
@@ -163,6 +180,10 @@ configure um de qualquer jeito — é barato errar um `--limit`.
 **Sem chave nenhuma:** todo o `compare.py` e todas as análises continuam
 funcionando com `referencia/resultados-referencia-v1.jsonl`. Os exercícios de
 leitura de dados não precisam da API.
+
+**Para rodar de novo depois**, em qualquer máquina: faça o fork, abra num
+Codespace ou no Replit, rode `python3 verificar.py`. Leva dois minutos e não
+instala nada — veja o [SETUP-WEB.md](../SETUP-WEB.md).
 
 **Os itens que o laboratório deixou abertos**, se você quiser continuar:
 

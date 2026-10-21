@@ -109,18 +109,20 @@ que o `compare.py` reporta cada competência separada, nunca só a média.
 
 ## 2.5 Leitura (10 min, em silêncio)
 
-Abra o guia de arquitetura e leia as seções **1 a 8**:
+Abra o guia de arquitetura e leia as seções **1 a 8**.
 
-```bash
-xdg-open docs/arquitetura.html   # Linux
-```
+**Em qualquer trilha**, o jeito que sempre funciona é pelo GitHub, que já
+renderiza os diagramas:
 
-```bash
-open docs/arquitetura.html       # macOS
-```
+**https://github.com/webtech-network/workshop-jev/blob/main/docs/ARQUITETURA.md**
 
-No Windows, dê dois cliques em `docs/arquitetura.html`. Ou leia a versão em
-texto: [docs/ARQUITETURA.md](../docs/ARQUITETURA.md).
+Outras opções, conforme onde você está:
+
+- **Replit / Codespaces:** abra `docs/ARQUITETURA.md` na barra lateral e use o
+  botão de **preview** do Markdown.
+- **Local:** abra `docs/arquitetura.html` no navegador (`xdg-open` no Linux,
+  `open` no macOS, dois cliques no Windows) — é a versão com os diagramas
+  desenhados.
 
 As seções 7 e 8 são as que você mais vai usar na etapa 4. Pode voltar nelas.
 

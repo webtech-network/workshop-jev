@@ -26,6 +26,43 @@ Três decisões de desenho que vale a pena preservar se você adaptar:
 
 ---
 
+## As trilhas
+
+O material roda em três ambientes, com **os mesmos comandos** nas 7 etapas:
+
+| Trilha | Onde a chave fica | Instalação | Risco |
+|---|---|---|---|
+| **GitHub Codespaces** | `.env.local` | nenhuma | franquia documentada: 120 h/mês por conta pessoal Free, e um workshop de 3 h num contêiner de 2 núcleos consome ~6 h dessa cota |
+| **Replit** | **Secrets** | nenhuma | **franquia não documentada** — veja abaixo |
+| **Local** | `.env.local` | Python + Git | PCs de laboratório podem não permitir |
+
+Os arquivos que sustentam isso: [`.devcontainer/devcontainer.json`](.devcontainer/devcontainer.json)
+(Codespaces), [`.replit`](.replit) e o `verificar.py`, que detecta sozinho em
+qual ambiente está e dá a dica certa.
+
+> ⚠️ **O risco do Replit, declarado.** O plano gratuito (Starter) funciona por
+> créditos de agente e de nuvem, e a Replit **não publica os limites na página
+> de preços** — ela lista só Core, Pro e Enterprise. Não dá para afirmar que
+> uma turma inteira atravessa 3 h no plano gratuito.
+>
+> O que fazer: **teste com uma conta gratuita nova, cronometrando**, antes de
+> prometer essa trilha à turma. Se não couber, as opções são a trilha
+> Codespaces (limite conhecido e folgado) ou um plano pago/educacional da
+> Replit. Em qualquer cenário o material é o mesmo — a troca de trilha não
+> custa nada no meio do workshop.
+
+### Teste na PUC antes do dia
+
+As chamadas à API saem do **ambiente de nuvem**, não do PC do laboratório. A
+rede da PUC só precisa abrir os sites. De uma máquina da sala, confirme:
+
+1. `github.com` abre e deixa fazer login.
+2. `replit.com` abre (se você vai oferecer essa trilha).
+3. Um Codespace abre e roda `python3 verificar.py`.
+
+Se algum estiver bloqueado, peça liberação ao TI com antecedência — ou caia na
+trilha local, que precisa de Python instalado nas máquinas.
+
 ## Antes do dia
 
 ### A chave da API — faça assim
@@ -222,6 +259,22 @@ C1 e C3 lado a lado são a aula inteira: mesma métrica ruim, doenças opostas.
 
 ## Plano B
 
+### A trilha web não funciona na sala
+
+- **Replit sem créditos:** mande todo mundo para Codespaces. Os comandos são os
+  mesmos; só a chave muda de lugar (Secrets → `.env.local`). Custa 2 minutos.
+- **Os dois bloqueados pela rede:** se houver Python nas máquinas, use a trilha
+  local. Se não houver nem isso, 5 das 7 etapas (1, 2, 4, 5 e 7) só precisam de
+  um navegador com GitHub: o material é legível no próprio repositório, e a
+  discussão das métricas pode ser conduzida com os números do cache de
+  referência projetados por você.
+- **Último recurso, só para análise:** os blocos de `compare.py` rodam em
+  qualquer notebook Python na web, inclusive Google Colab, clonando o
+  repositório com `!git clone`. Não há fluxo de Git ali, então a etapa 7 teria
+  de ser feita pela interface do GitHub. Não documentei essa trilha no material
+  do aluno de propósito: quatro trilhas em sete etapas viram instruções que se
+  contradizem.
+
 ### O provedor está devolvendo 429 continuamente
 
 Já aconteceu no laboratório, por períodos longos. Não é falha do material.
@@ -273,6 +326,9 @@ Para quem conhece o laboratório original:
 | `MODA_TESTE = 600` no `compare.py` | A baseline funcionava só com o dataset clonado; agora funciona sem |
 | Bug corrigido no `compare.py` | A variável do laço do limiar sobrescrevia o namespace do argparse e `--csv` quebrava com `AttributeError`. **Vale corrigir no LAB Jev também.** |
 | Mensagens de erro apontando para o `SETUP.md` | Autoatendimento em sala |
+| `verificar.py` | Uma checagem só, igual nas três trilhas, que detecta o ambiente |
+| `SETUP-WEB.md`, `.replit`, `.devcontainer/` | Workshop sem instalar nada |
+| `IA.md` | A IA é permitida com três regras: a chave nunca entra no chat, o pipeline não se toca, e a hipótese vem antes |
 | `docs/` copiado sem alteração | O guia de arquitetura já era didático |
 
 O que **não** veio: `.env.local`, `.chave-backup.json`, `debug/`, `data/`,
