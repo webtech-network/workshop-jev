@@ -1,7 +1,12 @@
-# SETUP — faça isto antes do workshop
+# SETUP — instalação local
 
 Tempo estimado: **20 minutos**. Ao final há um comando de verificação; se ele
 passar, você está pronto.
+
+> 🌐 **Não quer instalar nada?** O workshop inteiro roda no navegador, pelo
+> Replit ou pelo GitHub Codespaces, com os mesmos comandos e os mesmos
+> exercícios: **[SETUP-WEB.md](SETUP-WEB.md)**. É a trilha recomendada para PC
+> de laboratório ou máquina sem permissão de instalar programas.
 
 Se travar em qualquer passo, chegue 15 minutos antes do workshop — resolvemos
 juntos. Não deixe para a hora.
@@ -151,7 +156,8 @@ cd workshop-jev
 ```
 
 > **Rode tudo daqui.** Os scripts procuram `rubric.json` e `sample.jsonl` no
-> diretório atual. Se você rodar de outra pasta, eles não acham nada.
+> diretório atual. Se você rodar de outra pasta, eles não acham nada —
+> `cd "$(git rev-parse --show-toplevel)"` volta para a raiz.
 
 ---
 
@@ -222,14 +228,16 @@ git status --short
 
 ## 6. Verificação final
 
-Rode os dois comandos abaixo. Nenhum deles chama a API nem gasta nada.
+Um comando, que não chama a API nem gasta nada:
 
 ```bash
-python3 evaluate.py --dry-run
+python3 verificar.py
 ```
 
-Esperado: um JSON grande na tela, terminando com
-`[dry-run] 100 redacoes seriam avaliadas; nenhuma chamada feita.`
+Esperado: `Ambiente pronto`, com as 12 checagens. Se a chave ainda não chegou,
+aparece um aviso em vez de erro — é normal antes do dia.
+
+Para confirmar que o pipeline de análise roda:
 
 ```bash
 python3 compare.py --cache referencia/resultados-referencia-v1.jsonl --sample sample.jsonl
@@ -273,7 +281,7 @@ entra no seu fork.
 | `cat`, `sed` ou `ls -la` não existem | Idem | Use o **Git Bash**. |
 | `UnicodeDecodeError` ao ler a chave | `.env.local` gravado em UTF-16 pelo PowerShell | Recrie o arquivo no Git Bash. |
 | `AI_GATEWAY_API_KEY ausente` | `.env.local` não existe, tem nome errado (`.env.local.txt`) ou está vazio | Veja o passo 5. Confirme com `ls -a`. |
-| `cache nao encontrado` | Você rodou de outra pasta | `cd` para a raiz do repositório clonado. |
+| `cache nao encontrado` | Você rodou de outra pasta | `cd "$(git rev-parse --show-toplevel)"` |
 | `fatal: not a git repository` | Idem | `cd workshop-jev` |
 | Git pede "Password" e recusa | Senha de conta não funciona | Passo 3: `gh auth login` ou use um token. |
 | `Permission denied (publickey)` | Clone por SSH sem chave configurada | Clone por HTTPS: `https://github.com/...`, não `git@github.com:...`. |

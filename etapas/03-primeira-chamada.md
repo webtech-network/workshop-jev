@@ -84,7 +84,26 @@ essa dissonância — a etapa 5 vai explicá-la, e ela não é um bug.
 Deu `429`? É o esperado numa sala cheia. O script faz backoff exponencial e o
 cache torna tudo retomável: espere e rode o mesmo comando de novo.
 
-Deu `AI_GATEWAY_API_KEY ausente`? Volte ao [SETUP.md](../SETUP.md), passo 5.
+Deu `AI_GATEWAY_API_KEY ausente`? A chave está no lugar errado para a sua
+trilha:
+
+| Trilha | Onde a chave mora | Se faltar |
+|---|---|---|
+| **Replit** | **Tools → Secrets**, com o nome exato `AI_GATEWAY_API_KEY` | crie o Secret e **reabra o painel Shell** — ele só enxerga Secrets criados antes de abrir |
+| **Codespaces** | `.env.local` | `cp .env.example .env.local` e cole a chave |
+| **Local** | `.env.local` | [SETUP.md](../SETUP.md), passo 5 |
+
+Para conferir sem gastar chamada:
+
+```bash
+python3 verificar.py
+```
+
+A seção 4 diz se a chave foi encontrada e de onde ela veio.
+
+> **Nunca peça para uma IA "resolver" este erro.** Assistentes costumam
+> consertar escrevendo a chave dentro de um arquivo do projeto — que vai parar
+> num repositório público. Veja [IA.md](../IA.md).
 
 ---
 

@@ -12,6 +12,11 @@ Siga em ordem. Cada uma termina com um checklist.
 | 6 | [Sua rubrica](06-sua-rubrica.md) | 40 min | **sim** |
 | 7 | [Publicando o seu resultado](07-pull-request.md) | 20 min | não |
 
-Antes de começar: [SETUP.md](../SETUP.md).
+Antes de começar, monte o ambiente — as etapas são idênticas nas duas trilhas:
+
+- 🌐 **[SETUP-WEB.md](../SETUP-WEB.md)** — Replit ou Codespaces, sem instalar nada
+- 💻 **[SETUP.md](../SETUP.md)** — Python e Git na sua máquina
+
+E, se for usar IA durante os exercícios: **[IA.md](../IA.md)**.
 
 **[← Voltar ao README](../README.md)**

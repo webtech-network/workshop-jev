@@ -19,12 +19,29 @@ fornecida pelo instrutor no dia.
 
 ## Antes do workshop (faça em casa, ~20 min)
 
-Siga o **[SETUP.md](SETUP.md)** até o final. Ele termina com um comando de
-verificação; se ele passar, você está pronto. Se travar, chegue 15 minutos
-antes e resolvemos juntos.
+**Escolha onde vai trabalhar.** As 7 etapas são idênticas nas duas trilhas —
+os mesmos comandos `python3 ...`, os mesmos exercícios. Muda só onde você
+digita e onde a chave fica guardada.
 
-Resumo do que o SETUP instala: Python 3.10+, Git, autenticação no GitHub,
-e o fork deste repositório na sua conta.
+| | Trilha | Para quem |
+|---|---|---|
+| 🌐 | **[SETUP-WEB.md](SETUP-WEB.md)** — Replit ou GitHub Codespaces | **Não instala nada.** PC de laboratório, máquina sem permissão de instalar, ou quem prefere não mexer no próprio ambiente. Precisa só do navegador e de uma conta no GitHub. |
+| 💻 | **[SETUP.md](SETUP.md)** — Python e Git na sua máquina | Quem já tem o ambiente, ou quer ficar com ele montado depois do workshop. |
+
+Na dúvida, vá de **web**: nada para instalar, e nada para dar errado na hora.
+
+Qualquer que seja a trilha, ela termina com:
+
+```bash
+python3 verificar.py
+```
+
+Se passar, você está pronto. Se travar, chegue 15 minutos antes e resolvemos
+juntos — não deixe para a hora.
+
+> 🤖 **Vai usar IA?** O Replit tem assistente embutido, e você pode usar
+> ChatGPT, Claude ou Copilot em qualquer trilha. É incentivado, com três
+> regras que protegem a chave e o seu aprendizado: **[IA.md](IA.md)**.
 
 ---
 
@@ -58,6 +75,7 @@ funciona **offline**, usando um cache de resultados que já vem no repositório.
 
 | Arquivo | Papel |
 |---|---|
+| `verificar.py` | Confere se o seu ambiente está pronto: Python, arquivos, rubrica válida, chave e proteção do `.gitignore`. **Não chama a API.** Funciona igual nas três trilhas e sabe em qual você está. |
 | `sample.py` | Separa uma amostra estratificada por nota, para cobrir de 0 a 1000 em vez de empilhar no 600. |
 | `evaluate.py` | Chama o Jev, uma requisição por redação, com cache em JSONL e backoff em erro 429. |
 | `compare.py` | Lê o cache e reporta QWK, MAE, viés, acerto exato/adjacente, Pearson, baseline constante e a tabela de limiar. **Nunca toca a API.** |
@@ -84,8 +102,10 @@ funciona **offline**, usando um cache de resultados que já vem no repositório.
 ## Os três comandos que você vai repetir
 
 Rode **sempre da raiz do repositório** (a pasta `workshop-jev`) — os scripts
-procuram `rubric.json` e `sample.jsonl` no diretório atual. No Windows, rode
-tudo no **Git Bash**; veja o [SETUP.md](SETUP.md).
+procuram `rubric.json` e `sample.jsonl` no diretório atual.
+
+Onde digitar: no **Shell** do Replit, no **terminal** do Codespaces, ou no seu
+terminal local (no Windows, use o **Git Bash**).
 
 **1. Ver a requisição sem gastar nada:**
 
@@ -125,8 +145,10 @@ python3 compare.py --cache referencia/resultados-referencia-v1.jsonl --sample sa
    10 redações — na etapa 3, com `--limit` menor ainda. Quem roda as 100 de
    `sample.jsonl` derruba o provedor para a turma inteira: ele devolve `429`
    sob carga, às vezes por minutos.
-2. **Nunca comite a chave.** Ela vive em `.env.local`, que está no
-   `.gitignore`. Forks de repositório público são públicos.
+2. **Nunca comite a chave.** No Replit ela vive em **Secrets**; nas outras
+   trilhas, em `.env.local`, que está no `.gitignore`. Forks de repositório
+   público são públicos. E ela **nunca** entra num chat com IA — veja
+   [IA.md](IA.md).
 3. **Cada rubrica merece seu próprio `--cache`.** Misturar rodadas no mesmo
    arquivo mistura coortes e produz métrica sem sentido.
 4. **Não rode dois `evaluate.py` sobre o mesmo `--cache`** ao mesmo tempo:
