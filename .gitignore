@@ -1,0 +1,28 @@
+# NUNCA comite a chave da API. Forks de repositorio publico sao publicos:
+# um unico commit com a chave do instrutor a expoe para a internet inteira.
+.env
+.env.local
+.env.*.local
+*.key
+.chave-backup.json
+
+# Resultados das suas rodadas (cada aluno gera os seus).
+# Padroes ancorados com "/" para NAO esconder o cache em referencia/.
+/resultados*.jsonl
+/metricas*.csv
+/debug/
+
+# Dataset completo, se voce optar por clonar (tem o .git proprio)
+data/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Editores / SO
+.claude/
+.vscode/
+.idea/
+.DS_Store

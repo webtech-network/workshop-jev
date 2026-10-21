@@ -1,0 +1,68 @@
+{
+  "_comment": "GABARITO - nao abra antes da etapa 06. Rubrica v3 (hibrida) a que o laboratorio original chegou: C3 e C4 com ancoras contaveis (melhoram a DISCRIMINACAO) e C1/C2/C5 descritivas (ali o problema era CALIBRACAO, e contagens pioraram). Compare com a sua antes de olhar os numeros.",
+  "escala": 40,
+  "limiar_confianca": 0.7,
+  "_limiar_comment": "Decisoes com confidence abaixo deste valor vao para revisao humana. Medido em 100 redacoes: 0.70 automatiza 59% das decisoes com QWK 0.426 nelas; abaixo de 0.70 o filtro nao discrimina (em 0.60 o QWK automatizado cai para 0.335, pior que nao filtrar).",
+  "competencias": {
+    "c1": {
+      "nome": "Dominio da escrita formal",
+      "instructions": "Avalie o dominio da modalidade escrita formal da lingua portuguesa: ortografia, acentuacao, pontuacao, concordancia, regencia, flexao e escolha de registro.",
+      "criteria": [
+        "Desconhecimento total da modalidade escrita formal: o texto e ilegivel do ponto de vista gramatical ou nao apresenta estrutura de lingua escrita.",
+        "Dominio precario: desvios gramaticais e de convencoes da escrita sao sistematicos, graves e frequentes em todo o texto.",
+        "Dominio insuficiente: muitos desvios gramaticais, de escolha de registro e de convencoes da escrita, distribuidos pelo texto.",
+        "Dominio mediano: o texto e majoritariamente correto, mas ha desvios gramaticais e de convencoes da escrita em quantidade perceptivel.",
+        "Bom dominio: poucos desvios gramaticais e de convencoes da escrita, sem comprometer a leitura nem o registro formal.",
+        "Excelente dominio: desvios gramaticais ou de convencoes da escrita sao raros e claramente acidentais, com registro formal consistente."
+      ]
+    },
+    "c2": {
+      "nome": "Compreensao do tema e estrutura dissertativo-argumentativa",
+      "instructions": "Avalie se o texto compreende a proposta, desenvolve o tema exato solicitado e respeita a estrutura do texto dissertativo-argumentativo em prosa, mobilizando repertorio de outras areas do conhecimento.",
+      "criteria": [
+        "Fuga completa ao tema ou nao atendimento a estrutura dissertativo-argumentativa (texto narrativo, poema, receita, etc.).",
+        "Tangencia o tema ou apresenta dominio precario do tipo textual, com tracos constantes de outros tipos de texto.",
+        "Aborda o tema de forma superficial, com dominio insuficiente do texto dissertativo-argumentativo e repertorio ausente ou improdutivo.",
+        "Desenvolve o tema de forma previsivel, com estrutura dissertativo-argumentativa presente e repertorio legitimo mas nao produtivo para a argumentacao.",
+        "Desenvolve bem o tema, com estrutura dissertativo-argumentativa clara e repertorio sociocultural legitimo e produtivo.",
+        "Desenvolve o tema com consistencia, dominio pleno do texto dissertativo-argumentativo e repertorio sociocultural legitimo, pertinente e bem articulado a discussao."
+      ]
+    },
+    "c3": {
+      "nome": "Selecao e organizacao de argumentos",
+      "instructions": "Conte os argumentos DESENVOLVIDOS (uma afirmacao seguida de justificativa ou evidencia; uma frase solta nao conta) e verifique se cada um traz evidencia concreta: dado numerico, fato historico, exemplo nomeado, caso citado. Escolha o nivel pelo numero de argumentos desenvolvidos e pela presenca de evidencia.",
+      "criteria": [
+        "Nenhuma afirmacao ligada ao tema; o texto nao defende ponto de vista algum.",
+        "So afirmacoes soltas, nenhuma justificada; ou o ponto de vista muda ao longo do texto.",
+        "1 argumento desenvolvido, sem nenhuma evidencia concreta; o resto sao repeticoes da mesma ideia ou copias da coletanea.",
+        "2 argumentos desenvolvidos, nenhum com evidencia concreta (so raciocinio generico do tipo 'a sociedade precisa mudar').",
+        "2 ou mais argumentos desenvolvidos, ao menos 1 com evidencia concreta (dado, fato, exemplo nomeado), e ligados a uma tese unica.",
+        "3 ou mais argumentos desenvolvidos, a maioria com evidencia concreta, encadeados em progressao (cada paragrafo avanca sobre o anterior em vez de repetir)."
+      ]
+    },
+    "c4": {
+      "nome": "Mecanismos linguisticos de coesao",
+      "instructions": "Conte os conectivos DIFERENTES usados para ligar paragrafos e periodos (portanto, alem disso, entretanto, dessa forma, uma vez que...) e verifique se ha retomada por pronome ou sinonimo em vez de repetir a mesma palavra. Escolha o nivel pela variedade de conectivos e pela referenciacao.",
+      "criteria": [
+        "Nenhum conectivo; frases justapostas sem ligacao.",
+        "1 ou 2 conectivos no texto inteiro, repetidos; termos-chave sempre repetidos por extenso.",
+        "3 a 4 conectivos diferentes, com usos inadequados (conectivo que nao corresponde a relacao logica).",
+        "4 a 6 conectivos diferentes, usados corretamente, mas paragrafos comecando de forma repetitiva; pouca retomada por pronome.",
+        "6 a 8 conectivos diferentes, ligacao explicita entre todos os paragrafos, retomada por pronome ou sinonimo presente.",
+        "Mais de 8 conectivos diferentes, ligacao entre e dentro dos paragrafos, referenciacao variada sem nenhuma repeticao desnecessaria."
+      ]
+    },
+    "c5": {
+      "nome": "Proposta de intervencao",
+      "instructions": "Avalie a proposta de intervencao para o problema abordado, verificando seus elementos (agente, acao, meio, efeito e detalhamento) e o respeito aos direitos humanos.",
+      "criteria": [
+        "Ausencia de proposta de intervencao ou proposta que viola os direitos humanos.",
+        "Proposta de intervencao vaga, apenas tangencial ao tema, ou reduzida a uma frase generica.",
+        "Proposta de intervencao relacionada ao tema mas nao articulada a discussao, com apenas um ou dois elementos validos.",
+        "Proposta de intervencao relacionada ao tema e articulada a discussao, com tres elementos validos.",
+        "Proposta de intervencao bem articulada a discussao, com quatro elementos validos.",
+        "Proposta de intervencao completa e detalhada, com os cinco elementos (agente, acao, meio, efeito e detalhamento) articulados a argumentacao e respeitando os direitos humanos."
+      ]
+    }
+  }
+}

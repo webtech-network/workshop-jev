@@ -1,0 +1,979 @@
+<title>Arquitetura do LAB Jev</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --bg:#F1F0EE; --surface:#FBFAF9; --surface-2:#E9E7E4;
+    --ink:#1C1B19; --ink-soft:#413E3A; --muted:#6E6A66;
+    --rule:#D6D2CD; --rule-strong:#B8B2AB;
+    --accent:#A6322A; --accent-soft:#F0E2DF; --accent-ink:#8B2A23;
+    --signal:#2E5C6E; --signal-soft:#DDE7EB;
+    --warn:#8A6410;
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+    --mono:"IBM Plex Mono","SF Mono",Menlo,Consolas,monospace;
+    --col:68ch; --wide:1080px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#16181A; --surface:#1E2124; --surface-2:#282C30;
+      --ink:#ECEAE7; --ink-soft:#CFCBC6; --muted:#9A948D;
+      --rule:#33373B; --rule-strong:#4A4F55;
+      --accent:#E4776A; --accent-soft:#3A2622; --accent-ink:#F0958A;
+      --signal:#7FB8CD; --signal-soft:#1E2E36;
+      --warn:#D9A845;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#16181A; --surface:#1E2124; --surface-2:#282C30;
+    --ink:#ECEAE7; --ink-soft:#CFCBC6; --muted:#9A948D;
+    --rule:#33373B; --rule-strong:#4A4F55;
+    --accent:#E4776A; --accent-soft:#3A2622; --accent-ink:#F0958A;
+    --signal:#7FB8CD; --signal-soft:#1E2E36;
+    --warn:#D9A845;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+       font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--wide);margin:0 auto;padding:0 28px 96px}
+  .col{max-width:var(--col);margin-inline:auto}
+
+  /* ---------- cabeçalho ---------- */
+  header.top{max-width:var(--wide);margin:0 auto;padding:64px 28px 40px}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+           text-transform:uppercase;color:var(--accent);margin:0 0 18px}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(2.4rem,6vw,4rem);
+     line-height:1.04;letter-spacing:-.02em;margin:0;text-wrap:balance}
+  h1 em{font-style:italic;color:var(--accent)}
+  .dek{font-family:var(--serif);font-size:clamp(1.05rem,2.4vw,1.32rem);
+       line-height:1.5;color:var(--ink-soft);max-width:54ch;margin:20px 0 0}
+  .facts{display:flex;flex-wrap:wrap;gap:0;margin:36px 0 0;
+         border-top:1px solid var(--rule)}
+  .fact{flex:1 1 150px;padding:14px 18px 14px 0;border-right:1px solid var(--rule)}
+  .fact:last-child{border-right:0}
+  .fact dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+           text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+  .fact dd{margin:0;font-family:var(--serif);font-size:1.45rem;font-weight:500;
+           font-variant-numeric:tabular-nums}
+  .fact dd small{font-family:var(--sans);font-size:.62em;font-weight:400;color:var(--muted)}
+
+  /* ---------- índice ---------- */
+  nav.toc{max-width:var(--wide);margin:0 auto 72px;padding:0 28px}
+  .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));
+            gap:1px;background:var(--rule);border:1px solid var(--rule)}
+  .toc-grid a{display:flex;gap:10px;background:var(--surface);padding:11px 14px;
+              text-decoration:none;color:var(--ink);font-size:14px;line-height:1.35}
+  .toc-grid a:hover{background:var(--accent-soft);color:var(--accent-ink)}
+  .toc-grid a b{font-family:var(--mono);font-size:11.5px;color:var(--muted);
+                padding-top:2px;font-weight:500}
+  .toc-grid a:hover b{color:var(--accent)}
+
+  /* ---------- seções ---------- */
+  section{margin:0 0 76px;scroll-margin-top:24px}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(1.5rem,3.4vw,2.05rem);
+     line-height:1.15;letter-spacing:-.012em;margin:0 0 6px;text-wrap:balance;
+     display:flex;gap:14px;align-items:baseline}
+  h2 span.num{font-family:var(--mono);font-size:.62em;color:var(--accent);
+              font-weight:500;flex:none}
+  .lede{color:var(--muted);font-size:14.5px;margin:0 0 26px;padding-left:38px}
+  h3{font-family:var(--sans);font-weight:600;font-size:1rem;letter-spacing:.005em;
+     margin:34px 0 10px}
+  p{margin:0 0 17px}
+  .col>p:last-child{margin-bottom:0}
+  strong{font-weight:600}
+  a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2px}
+
+  code{font-family:var(--mono);font-size:.855em;background:var(--surface-2);
+       padding:.12em .36em;border-radius:2px}
+  pre{font-family:var(--mono);font-size:13px;line-height:1.6;background:var(--surface);
+      border:1px solid var(--rule);border-left:2px solid var(--rule-strong);
+      padding:16px 18px;overflow-x:auto;margin:0 0 20px}
+  pre code{background:none;padding:0;font-size:inherit}
+  .cmt{color:var(--muted)}
+  .hl{color:var(--accent);font-weight:500}
+  .hl2{color:var(--signal);font-weight:500}
+
+  /* ---------- tabelas ---------- */
+  .tw{overflow-x:auto;margin:0 0 22px;border:1px solid var(--rule);background:var(--surface)}
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);
+        vertical-align:top}
+  thead th{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+           text-transform:uppercase;color:var(--muted);font-weight:500;
+           background:var(--surface-2)}
+  tbody tr:last-child td{border-bottom:0}
+  td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;
+            font-size:13.5px;white-space:nowrap}
+  tr.tot td{font-weight:600;background:var(--surface-2)}
+  td .up{color:var(--accent);font-weight:500}
+  td .dn{color:var(--signal);font-weight:500}
+
+  /* ---------- figuras ---------- */
+  figure{margin:32px 0;max-width:var(--wide)}
+  figure.bleed{margin-inline:calc((var(--col) - min(var(--wide), 100%))/2)}
+  svg.fig{display:block;width:100%;max-width:100%;height:auto;
+          background:var(--surface);border:1px solid var(--rule)}
+  figcaption{font-size:13.5px;color:var(--muted);margin-top:10px;
+             padding-left:2px;max-width:62ch}
+  figcaption b{color:var(--ink-soft);font-weight:600}
+
+  /* SVG: cores por token, para o diagrama acompanhar o tema */
+  svg.fig{color:var(--ink)}
+  svg.fig .ac{fill:var(--accent)}
+  svg.fig .ac-st{stroke:var(--accent);fill:none}
+  svg.fig .ac-bg{fill:var(--accent);fill-opacity:.1;stroke:var(--accent);stroke-opacity:.55}
+  svg.fig .sg{fill:var(--signal)}
+  svg.fig .sg-bg{fill:var(--signal);fill-opacity:.12;stroke:var(--signal);stroke-opacity:.55}
+  svg.fig .sg-fill{fill:var(--signal)}
+  svg.fig .bx{fill:none;stroke:currentColor;stroke-opacity:.45}
+  svg.fig .bx-d{fill:none;stroke:currentColor;stroke-opacity:.35;stroke-dasharray:4 3}
+  svg.fig .ln{stroke:currentColor;stroke-opacity:.5;fill:none}
+  svg.fig .bar{fill:currentColor;opacity:.28}
+  svg.fig .bar-0{fill:currentColor;opacity:.2}
+  svg.fig text{fill:currentColor}
+  svg.fig .mut{opacity:.6}
+  svg.fig .mut2{opacity:.45}
+  svg.fig .zone{font-family:var(--mono);font-size:10px;letter-spacing:1.2px;opacity:.45}
+  svg.fig .ttl{font-size:13px;font-weight:600}
+  svg.fig .sub{font-size:11px;opacity:.65}
+  svg.fig .mono{font-family:var(--mono)}
+  svg.fig .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.6px;opacity:.7}
+
+  /* ---------- destaques ---------- */
+  .note{border-left:2px solid var(--accent);background:var(--accent-soft);
+        padding:15px 18px;margin:0 0 22px;font-size:15px}
+  .note p{margin:0 0 10px}.note p:last-child{margin:0}
+  .note .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+             text-transform:uppercase;color:var(--accent-ink);display:block;margin-bottom:6px}
+
+  .contrast{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);
+            border:1px solid var(--rule);margin:0 0 24px}
+  .contrast>div{background:var(--surface);padding:18px}
+  .contrast h4{margin:0 0 4px;font-size:15px;font-weight:600}
+  .contrast .who{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+                 text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+  .contrast dl{margin:0;display:grid;gap:10px}
+  .contrast dt{font-size:12px;color:var(--muted);margin:0}
+  .contrast dd{margin:0;font-size:14.5px;line-height:1.45}
+  .contrast .a{color:var(--signal)}.contrast .b{color:var(--accent)}
+  @media(max-width:620px){.contrast{grid-template-columns:1fr}}
+
+  /* cartão de memorização — a peça central */
+  .card{background:var(--ink);color:var(--bg);padding:30px 26px;margin:28px 0;
+        border:1px solid var(--ink)}
+  :root[data-theme="dark"] .card,
+  :root:not([data-theme="light"]) .card{background:var(--surface-2);color:var(--ink);
+        border-color:var(--rule-strong)}
+  @media (prefers-color-scheme:light){
+    :root:not([data-theme="dark"]) .card{background:var(--ink);color:var(--bg)}
+  }
+  .card h3{color:inherit;margin:0 0 20px;font-family:var(--mono);font-size:11px;
+           letter-spacing:.14em;text-transform:uppercase;opacity:.65;font-weight:500}
+  .card pre{background:none;border:0;border-left:0;padding:0;margin:0;color:inherit;
+            font-size:13px;line-height:1.75}
+  .card .k{color:#E4776A;font-weight:500}
+  .card .v{color:#7FB8CD}
+  .card .d{opacity:.5}
+
+  .steps{counter-reset:s;list-style:none;padding:0;margin:0 0 22px;
+         display:flex;flex-direction:column;gap:16px}
+  .steps li{counter-increment:s;position:relative;padding-left:34px;font-size:15px;
+            line-height:1.55}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:2px;
+            font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:500}
+  .steps b{display:block;font-weight:600;margin-bottom:1px}
+  .steps b code{font-size:.92em}
+
+  footer{max-width:var(--wide);margin:0 auto;padding:36px 28px 72px;
+         border-top:1px solid var(--rule);font-size:13.5px;color:var(--muted)}
+  hr.div{border:0;border-top:1px solid var(--rule);margin:0 auto 76px;max-width:var(--col)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  a:focus-visible,.toc-grid a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<header class="top">
+  <p class="eyebrow">Guia de arquitetura · WebTech Labs</p>
+  <h1>Como o LAB Jev <em>dá nota</em> numa redação</h1>
+  <p class="dek">Pegamos redações que já têm nota humana, pedimos a nota do modelo Jev,
+  e medimos o quanto os dois concordam. Este documento existe para você redesenhar o
+  sistema numa folha em branco.</p>
+  <dl class="facts">
+    <div class="fact"><dt>Corpus</dt><dd>4.570 <small>redações</small></dd></div>
+    <div class="fact"><dt>Avaliadas</dt><dd>100 <small>estratificadas</small></dd></div>
+    <div class="fact"><dt>Código</dt><dd>563 <small>linhas Python</small></dd></div>
+    <div class="fact"><dt>Custo total</dt><dd>&lt; US$ 0,01</dd></div>
+  </dl>
+</header>
+
+<nav class="toc">
+  <div class="toc-grid">
+    <a href="#s1"><b>01</b><span>Os dois tipos de IA</span></a>
+    <a href="#s2"><b>02</b><span>Mapa da arquitetura</span></a>
+    <a href="#s3"><b>03</b><span>A pergunta tipada</span></a>
+    <a href="#s4"><b>04</b><span>Anatomia da chamada</span></a>
+    <a href="#s5"><b>05</b><span>Anatomia da resposta</span></a>
+    <a href="#s6"><b>06</b><span>A pegadinha do <code>score</code></span></a>
+    <a href="#s7"><b>07</b><span>A escada de conversão</span></a>
+    <a href="#s8"><b>08</b><span>Os quatro arquivos</span></a>
+    <a href="#s9"><b>09</b><span>Ciclo de uma chamada</span></a>
+    <a href="#s10"><b>10</b><span>Padrões de programação</span></a>
+    <a href="#s11"><b>11</b><span>O que os números dizem</span></a>
+    <a href="#s12"><b>12</b><span>Cartão de memorização</span></a>
+    <a href="#s13"><b>13</b><span>Experimentos</span></a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<section id="s1">
+  <div class="col">
+    <h2><span class="num">01</span> Os dois tipos de IA</h2>
+    <p class="lede">O conceito que sustenta todo o resto. Guarde este primeiro.</p>
+    <p>Existem dois jeitos muito diferentes de usar um modelo de linguagem, e confundi-los
+    é a origem de quase todo erro de projeto neste terreno.</p>
+  </div>
+
+  <div class="col">
+    <div class="contrast">
+      <div>
+        <p class="who">Modo A</p>
+        <h4 class="a">LLM generativo</h4>
+        <dl>
+          <dt>Analogia</dt><dd>Um <b>ensaísta</b> que escreve um parecer</dd>
+          <dt>Devolve</dt><dd>Texto livre</dd>
+          <dt>Você pede</dt><dd>&ldquo;Avalie esta redação&rdquo;</dd>
+          <dt>Recebe</dt><dd>Três parágrafos de opinião</dd>
+          <dt>Trabalho extra</dt><dd>Você precisa <b>extrair</b> o número do texto</dd>
+        </dl>
+      </div>
+      <div>
+        <p class="who">Modo B — o nosso</p>
+        <h4 class="b">Modelo de decisão (Jev)</h4>
+        <dl>
+          <dt>Analogia</dt><dd>Um <b>avaliador com prancheta</b> que marca X num formulário</dd>
+          <dt>Devolve</dt><dd>Um valor tipado + probabilidades</dd>
+          <dt>Você pede</dt><dd>&ldquo;Numa escala de 6 níveis, qual o nível da gramática?&rdquo;</dd>
+          <dt>Recebe</dt><dd><code>nível 2, confiança 0,62</code></dd>
+          <dt>Trabalho extra</dt><dd>Nenhum: o número já vem número</dd>
+        </dl>
+      </div>
+    </div>
+
+    <p><strong>Tipado</strong> quer dizer que o formato da resposta é decidido <em>antes</em>
+    da pergunta. Você não recebe &ldquo;acho que uns 120 pontos, mas depende&rdquo; — recebe
+    um índice de 0 a 5, sempre, com a probabilidade de cada um.</p>
+
+    <p>O Jev é chamado de modelo <strong>System One</strong>, nome emprestado da psicologia,
+    onde &ldquo;Sistema 1&rdquo; é o pensamento rápido e automático e &ldquo;Sistema 2&rdquo;
+    o lento e deliberativo. O Jev é o reflexo, não a reflexão: decide em cerca de meio
+    segundo e <strong>não escreve texto nenhum</strong>.</p>
+
+    <div class="note">
+      <span class="tag">Consequência de projeto</span>
+      <p>O Jev é incapaz de redigir o feedback do aluno. Ele só dá notas. O parecer em
+      texto exige um segundo modelo, generativo, alimentado pelas decisões do Jev — e essa
+      camada ainda não existe no protótipo.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="s2">
+  <div class="col">
+    <h2><span class="num">02</span> Mapa da arquitetura</h2>
+    <p class="lede">Três zonas: o que não controlamos, o que escrevemos, o que fica em disco.</p>
+  </div>
+
+  <figure>
+    <svg class="fig" viewBox="0 0 1000 380" role="img" aria-label="Pipeline em três colunas: Essay-BR alimenta sample.py, que passa sample.jsonl para evaluate.py; evaluate.py troca requisições HTTPS com o AI Gateway, que encaminha ao modelo Jev, e passa resultados.jsonl para compare.py, que escreve metricas.csv. Não existe ligação entre compare.py e a rede.">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,1 L9,5 L0,9 z" fill="currentColor" fill-opacity=".55"/>
+        </marker>
+        <marker id="ar-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path class="ac" d="M0,1 L9,5 L0,9 z"/>
+        </marker>
+      </defs>
+
+      <text class="zone" x="40" y="32">SERVIÇOS EXTERNOS</text>
+      <text class="zone" x="40" y="162">NOSSO CÓDIGO</text>
+      <text class="zone" x="740" y="290">SAÍDA</text>
+
+      <!-- faixa 1 : externos -->
+      <rect class="bx" x="40" y="46" width="220" height="70"/>
+      <text class="ttl" x="150" y="74" text-anchor="middle">Essay-BR</text>
+      <text class="sub" x="150" y="91" text-anchor="middle">4.570 redações</text>
+      <text class="sub" x="150" y="106" text-anchor="middle">com nota humana</text>
+
+      <rect class="bx" x="390" y="46" width="160" height="70"/>
+      <text class="ttl" x="470" y="78" text-anchor="middle">AI Gateway</text>
+      <text class="sub" x="470" y="99" text-anchor="middle">porteiro e cobrança</text>
+
+      <rect class="ac-bg" x="630" y="46" width="160" height="70"/>
+      <text class="ttl ac" x="710" y="78" text-anchor="middle">Modelo Jev</text>
+      <text class="sub ac" x="710" y="99" text-anchor="middle">TypeSafe AI · ~0,5 s</text>
+
+      <text class="sub mut2" x="960" y="80" text-anchor="end">nada aqui em cima:</text>
+      <text class="sub mut2" x="960" y="97" text-anchor="end">compare.py não usa a rede</text>
+
+      <!-- faixa 2 : nosso código -->
+      <rect class="bx" x="40" y="174" width="220" height="76" stroke-opacity=".7"/>
+      <text class="ttl mono" x="150" y="202" text-anchor="middle">sample.py</text>
+      <text class="sub" x="150" y="222" text-anchor="middle">escolhe quem avaliar</text>
+      <text class="sub" x="150" y="238" text-anchor="middle">e valida os rótulos</text>
+
+      <rect class="bx" x="390" y="174" width="220" height="76" stroke-opacity=".7"/>
+      <text class="ttl mono" x="500" y="202" text-anchor="middle">evaluate.py</text>
+      <text class="sub" x="500" y="222" text-anchor="middle">monta as perguntas</text>
+      <text class="sub" x="500" y="238" text-anchor="middle">e chama o Jev</text>
+
+      <rect class="bx" x="740" y="174" width="220" height="76" stroke-opacity=".7"/>
+      <text class="ttl mono" x="850" y="202" text-anchor="middle">compare.py</text>
+      <text class="sub" x="850" y="222" text-anchor="middle">mede a concordância</text>
+      <text class="sub" x="850" y="238" text-anchor="middle">lendo só o cache</text>
+
+      <!-- faixa 3 : saída -->
+      <rect class="bx-d" x="740" y="302" width="220" height="44"/>
+      <text class="mono sub" x="850" y="329" text-anchor="middle">metricas.csv</text>
+
+      <!-- conectores -->
+      <g class="ln" marker-end="url(#ar)">
+        <path d="M150,116 L150,174"/>
+        <path d="M260,212 L390,212"/>
+        <path d="M610,212 L740,212"/>
+        <path d="M850,250 L850,302"/>
+      </g>
+      <g class="ac-st" stroke-width="1.5" marker-end="url(#ar-a)" marker-start="url(#ar-a)">
+        <path d="M470,174 L470,116"/>
+      </g>
+      <g class="ac-st" stroke-width="1.5" marker-end="url(#ar-a)">
+        <path d="M550,81 L630,81"/>
+      </g>
+
+      <g class="lbl">
+        <text x="160" y="150">lê o corpus</text>
+        <text class="ac" x="482" y="150" opacity=".95">HTTPS</text>
+        <text class="ac" x="590" y="72" text-anchor="middle" opacity=".95">encaminha</text>
+        <text x="325" y="203" text-anchor="middle">sample.jsonl</text>
+        <text x="675" y="203" text-anchor="middle">resultados.jsonl</text>
+        <text x="862" y="281">escreve</text>
+      </g>
+    </svg>
+    <figcaption><b>Da esquerda para a direita é o caminho dos dados.</b> A única ligação de
+    mão dupla é a que sai para a internet; todo o resto é um passo adiante. Repare que
+    <code>compare.py</code> não tem seta nenhuma para o gateway — ele só lê o cache, e isso
+    é deliberado.</figcaption>
+  </figure>
+</section>
+
+<hr class="div">
+
+<section id="s3">
+  <div class="col">
+    <h2><span class="num">03</span> A unidade básica: a pergunta tipada</h2>
+    <p class="lede">Tudo no Jev gira em torno disto. Três tipos, e nós usamos um só.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>Tipo</th><th>Pergunta que responde</th><th>Devolve</th></tr></thead>
+        <tbody>
+          <tr><td><code>boolean</code></td><td>Isto é verdade?</td><td>um número de 0 a 1</td></tr>
+          <tr><td><code>choice</code></td><td>Qual destas opções?</td><td>a opção + probabilidade de cada</td></tr>
+          <tr><td><code>score</code></td><td>Em que nível, numa escala?</td><td>o nível + probabilidade de cada</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Usamos <strong>só <code>score</code></strong>, porque o ENEM é exatamente isso: cada
+    competência vale 0, 40, 80, 120, 160 ou 200 pontos. Seis níveis.</p>
+
+    <div class="note">
+      <span class="tag">Pegadinha de vocabulário</span>
+      <p>A documentação oficial da TypeSafe chama o tipo booleano de <code>noul</code>.
+      O Vercel AI Gateway chama de <code>boolean</code>. São a mesma coisa com dois nomes —
+      e se você mandar <code>noul</code> pelo gateway, ele recusa a requisição.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="s4">
+  <div class="col">
+    <h2><span class="num">04</span> Anatomia da chamada</h2>
+    <p class="lede">Três campos no corpo, e só três.</p>
+
+<pre><code><span class="cmt">POST</span> https://ai-gateway.vercel.sh<span class="hl">/v1/evaluate</span>
+Authorization: Bearer vck_...
+
+{
+  "model": "typesafe-ai/jev",
+  <span class="hl">"state"</span>: "Título: A importância da cultura\n\nÉ notório que...",
+  "questions": {
+    "c1": {
+      "type": "score",
+      "instructions": "Avalie o domínio da escrita formal...",
+      <span class="hl2">"criteria"</span>: [ <span class="cmt">6 âncoras, em ordem do nível 0 ao 5</span> ]
+    },
+    "c2": { ... }, "c3": { ... }, "c4": { ... }, "c5": { ... }
+  }
+}</code></pre>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>Campo</th><th>O que é</th><th>Analogia</th></tr></thead>
+        <tbody>
+          <tr><td><code>model</code></td><td>qual modelo usar</td><td>o nome do avaliador que você contratou</td></tr>
+          <tr><td><code>state</code></td><td><b>o texto a ser avaliado</b></td><td>a prova que você põe na mesa dele</td></tr>
+          <tr><td><code>questions</code></td><td>as perguntas, com a régua de cada uma</td><td>o formulário que ele preenche</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong><code>state</code> é a palavra para gravar.</strong> Não é <code>messages</code>,
+    não é <code>prompt</code>, não é <code>input</code>. É &ldquo;estado&rdquo;, porque o Jev
+    pensa em termos de &ldquo;avalie <em>este estado do mundo</em> contra <em>estas
+    perguntas</em>&rdquo;.</p>
+
+    <p>E o endpoint é <code>/v1/evaluate</code>, não <code>/v1/chat/completions</code>.
+    Aquele recusa o modelo com a mensagem <em>&ldquo;is an evaluation model, not a language
+    model&rdquo;</em> — uma frase que vale reconhecer, porque é o erro que você vai ver se
+    tentar usar o Jev como se fosse um LLM comum.</p>
+
+    <p>As cinco competências vão <strong>numa requisição só</strong>. O Jev lê a redação
+    uma vez e responde as cinco perguntas em paralelo. Isso importa para o custo: você paga
+    o texto da redação uma vez, não cinco.</p>
+
+    <h3>Como uma competência vira uma pergunta</h3>
+    <p>Este é o pulo do gato. No <code>rubric.json</code>:</p>
+
+<pre><code>"c1": {
+  "instructions": "Avalie o domínio da modalidade escrita formal...",
+  "criteria": [
+    "Desconhecimento total da modalidade escrita..."  <span class="cmt">← nível 0</span>
+    "Domínio precário: desvios sistemáticos e graves..."  <span class="cmt">← nível 1</span>
+    "Domínio insuficiente: muitos desvios..."  <span class="cmt">← nível 2</span>
+    "Domínio mediano: majoritariamente correto, mas..."  <span class="cmt">← nível 3</span>
+    "Bom domínio: poucos desvios..."  <span class="cmt">← nível 4</span>
+    "Excelente domínio: desvios raros e acidentais..."  <span class="cmt">← nível 5</span>
+  ]
+}</code></pre>
+
+    <p><code>criteria</code> é uma <strong>lista ordenada de âncoras</strong> — cada âncora
+    descreve o que caracteriza aquele nível. <strong>A posição na lista é o nível.</strong>
+    O Jev nunca vê a expressão &ldquo;120 pontos&rdquo;: ele vê seis descrições em ordem e
+    escolhe entre elas.</p>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="s5">
+  <div class="col">
+    <h2><span class="num">05</span> Anatomia da resposta</h2>
+    <p class="lede">Resposta real da redação <code>idx=633</code>, encurtada para uma competência.</p>
+
+<pre><code>{
+  "model": "typesafe-ai/jev",
+  <span class="hl2">"answers"</span>: {
+    "c1": {
+      "type": "score",
+      <span class="hl">"score": 2.49</span>,
+      "probabilities": { "0":0, "1":0.04, <span class="hl">"2":0.48</span>, "3":0.43, "4":0.05, "5":0 },
+      "confidence": 0.62
+    }
+  },
+  "usage": { "inputTokens": 1850, "outputTokens": 74 }
+}</code></pre>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>Campo</th><th>Significado</th></tr></thead>
+        <tbody>
+          <tr><td><code>answers</code></td><td>um objeto por pergunta, com <b>a mesma chave</b> que você enviou (<code>c1</code>)</td></tr>
+          <tr><td><code>probabilities</code></td><td>quanta chance ele dá a cada nível. Soma 1,00</td></tr>
+          <tr><td><code>confidence</code></td><td>quão decidido ele está. Baixo = candidato a revisão humana</td></tr>
+          <tr><td><code>score</code></td><td>⚠️ leia a seção 06 antes de usar este campo</td></tr>
+          <tr><td><code>usage</code></td><td>tokens consumidos — é o que determina o custo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="s6">
+  <div class="col">
+    <h2><span class="num">06</span> A pegadinha: <code>score</code> não é o nível escolhido</h2>
+    <p class="lede">O erro que só a primeira execução real revelou.</p>
+    <p>Olhe os números da resposta acima. O nível mais provável é o <strong>2</strong>, com
+    48%. Mas <code>score</code> veio <strong>2,49</strong>. Por quê?</p>
+  </div>
+
+  <figure>
+    <svg class="fig" viewBox="0 0 1000 400" role="img" aria-label="Gráfico de barras das probabilidades da competência C1: nível 0 com 0 por cento, nível 1 com 4 por cento, nível 2 com 48 por cento, nível 3 com 43 por cento, nível 4 com 5 por cento, nível 5 com 0 por cento. O nível mais votado é o 2, que vale 80 pontos, mas o valor esperado cai em 2,49, entre os níveis 2 e 3, equivalente a 99,6 pontos.">
+      <!-- eixo -->
+      <line x1="90" y1="280" x2="940" y2="280" stroke="currentColor" stroke-opacity=".45"/>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity=".45">
+        <text x="90" y="62">probabilidade</text>
+      </g>
+
+      <!-- barras -->
+      <g>
+        <rect x="118" y="278" width="86" height="2" fill="currentColor" opacity=".25"/>
+        <rect x="259" y="263.3" width="86" height="16.7" fill="currentColor" opacity=".3"/>
+        <rect x="401" y="80" width="86" height="200" class="sg-fill"/>
+        <rect x="543" y="100.8" width="86" height="179.2" fill="currentColor" opacity=".3"/>
+        <rect x="684" y="259.2" width="86" height="20.8" fill="currentColor" opacity=".3"/>
+        <rect x="826" y="278" width="86" height="2" fill="currentColor" opacity=".25"/>
+      </g>
+
+      <!-- porcentagens -->
+      <g font-family="IBM Plex Mono, monospace" font-size="11.5" text-anchor="middle" fill="currentColor">
+        <text x="161" y="268" opacity=".45">0%</text>
+        <text x="302" y="253" opacity=".65">4%</text>
+        <text x="444" y="70" class="sg" font-weight="500">48%</text>
+        <text x="586" y="90" opacity=".75">43%</text>
+        <text x="727" y="249" opacity=".65">5%</text>
+        <text x="869" y="268" opacity=".45">0%</text>
+      </g>
+
+      <!-- eixo x: niveis e notas -->
+      <g font-family="IBM Plex Sans, sans-serif" text-anchor="middle">
+        <g font-size="13" font-weight="600" fill="currentColor">
+          <text x="161" y="302">0</text><text x="302" y="302">1</text>
+          <text x="444" y="302" class="sg">2</text><text x="586" y="302">3</text>
+          <text x="727" y="302">4</text><text x="869" y="302">5</text>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".55">
+          <text x="161" y="320">0 pts</text><text x="302" y="320">40</text>
+          <text x="444" y="320">80</text><text x="586" y="320">120</text>
+          <text x="727" y="320">160</text><text x="869" y="320">200</text>
+        </g>
+        <text x="515" y="344" font-size="11" fill="currentColor" opacity=".5"
+              font-family="IBM Plex Mono, monospace">nível  ·  nota ENEM correspondente</text>
+      </g>
+
+      <!-- linha do valor esperado -->
+      <line x1="513.6" y1="76" x2="513.6" y2="292" class="ac-st" stroke-width="1.8" stroke-dasharray="5 4"/>
+      <circle cx="513.6" cy="280" r="4.5" class="ac"/>
+      <g font-family="IBM Plex Sans, sans-serif" font-size="12.5">
+        <rect x="530" y="26" width="200" height="48" class="ac-bg"/>
+        <text x="542" y="46" class="ac" font-weight="600">valor esperado = 2,49</text>
+        <text x="542" y="65" class="ac" opacity=".85" font-family="IBM Plex Mono, monospace" font-size="11.5">× 40 = 99,6 pts</text>
+      </g>
+      <g font-family="IBM Plex Sans, sans-serif" font-size="12.5">
+        <rect x="214" y="150" width="176" height="46" class="sg-bg"/>
+        <text x="224" y="168" class="sg" font-weight="600">mais votado = 2</text>
+        <text x="224" y="186" class="sg" opacity=".85" font-family="IBM Plex Mono, monospace" font-size="11.5">× 40 = 80 pts</text>
+      </g>
+      <line x1="390" y1="173" x2="425" y2="173" class="ln" stroke-opacity=".6" marker-end="url(#ar)"/>
+
+      <!-- conta -->
+      <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor">
+        <text x="90" y="378" opacity=".75">0×0,00 + 1×0,04 + 2×0,48 + 3×0,43 + 4×0,05 + 5×0,00 = <tspan class="ac" font-weight="500">2,49</tspan></text>
+      </g>
+    </svg>
+    <figcaption><b>O Jev estava rachado entre os níveis 2 e 3</b> — 48% contra 43%. O campo
+    <code>score</code> é a média ponderada dessas probabilidades, não o nível mais votado.
+    A linha vermelha cai entre as duas barras altas, que é exatamente onde a indecisão
+    está.</figcaption>
+  </figure>
+
+  <div class="col">
+    <p>Isso se chama <strong>valor esperado</strong>: a média de todos os resultados
+    possíveis, cada um pesado pela sua probabilidade. É como dizer que um dado
+    &ldquo;dá 3,5 em média&rdquo; — 3,5 não é face nenhuma do dado, é o centro de massa
+    das possibilidades.</p>
+
+    <p>Guardamos <strong>as duas leituras</strong>, e por motivos diferentes:</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>Campo no cache</th><th class="n">Valor</th><th>Para que serve</th></tr></thead>
+        <tbody>
+          <tr><td><code>nota_argmax</code></td><td class="n">80</td><td>Uma nota que o ENEM aceita. É o que você mostraria a um aluno.</td></tr>
+          <tr><td><code>nota_esperada</code></td><td class="n">99,6</td><td>Não existe no ENEM, mas preserva a indecisão — e <b>correlaciona melhor</b> com a nota humana.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Dizer só &ldquo;nível 2&rdquo; joga no lixo metade do que o modelo sabe.</p>
+
+    <div class="note">
+      <span class="tag">Este bug nos pegou de verdade</span>
+      <p>A primeira versão do código tratava <code>score</code> como índice e calculava
+      <code>2,49 × 40 = 99,6</code> chamando o resultado de <code>nota_argmax</code>.
+      Só descobrimos ao fazer a primeira chamada real — nenhuma revisão de código havia
+      pegado. É o argumento mais forte a favor de rodar cedo com <code>--limit 1</code>
+      em vez de escrever o pipeline inteiro primeiro.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="s7">
+  <div class="col">
+    <h2><span class="num">07</span> A escada de conversão</h2>
+    <p class="lede">O diagrama para decorar. Toda a matemática do projeto é <code>× 40</code>.</p>
+  </div>
+
+  <figure>
+    <svg class="fig" viewBox="0 0 1000 300" role="img" aria-label="Escada de conversão: os seis níveis do Jev, de 0 a 5, multiplicados por 40, resultam nas notas ENEM de 0, 40, 80, 120, 160 e 200 pontos por competência; a soma das cinco competências dá o total de 0 a 1000">
+      <g>
+        <rect x="90" y="248" width="138" height="14" fill="currentColor" opacity=".18"/>
+        <rect x="232" y="212" width="138" height="50" fill="currentColor" opacity=".22"/>
+        <rect x="374" y="176" width="138" height="86" fill="currentColor" opacity=".26"/>
+        <rect x="516" y="140" width="138" height="122" fill="currentColor" opacity=".3"/>
+        <rect x="658" y="104" width="138" height="158" fill="currentColor" opacity=".34"/>
+        <rect x="800" y="68" width="138" height="194" class="ac" fill-opacity=".22"/>
+      </g>
+      <g font-family="IBM Plex Sans, sans-serif" text-anchor="middle" font-size="12" fill="currentColor" opacity=".6">
+        <text x="159" y="242">nível 0</text><text x="301" y="206">nível 1</text>
+        <text x="443" y="170">nível 2</text><text x="585" y="134">nível 3</text>
+        <text x="727" y="98">nível 4</text>
+        <text x="869" y="62" class="ac" opacity="1" font-weight="600">nível 5</text>
+      </g>
+      <g font-family="Newsreader, Georgia, serif" text-anchor="middle" font-size="19" font-weight="500" fill="currentColor">
+        <text x="159" y="284">0</text><text x="301" y="284">40</text>
+        <text x="443" y="284">80</text><text x="585" y="284">120</text>
+        <text x="727" y="284">160</text>
+        <text x="869" y="284" class="ac">200</text>
+      </g>
+      <line x1="90" y1="262" x2="938" y2="262" stroke="currentColor" stroke-opacity=".45"/>
+      <g font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".55">
+        <text x="90" y="42">o Jev escolhe um nível</text>
+        <text x="938" y="42" text-anchor="end" class="ac" opacity="1" font-weight="500">× 40 = pontos ENEM</text>
+      </g>
+    </svg>
+    <figcaption>Seis níveis × 40 = 200 pontos por competência; cinco competências = 1000
+    pontos. <b>O número 40 vive em um único lugar</b> — <code>"escala": 40</code> no
+    <code>rubric.json</code> — para você trocar a régua sem tocar em código.</figcaption>
+  </figure>
+</section>
+
+<hr class="div">
+
+<section id="s8">
+  <div class="col">
+    <h2><span class="num">08</span> Os quatro arquivos</h2>
+    <p class="lede">Cada um com uma responsabilidade, e nenhum sabendo o que o outro faz.</p>
+
+    <h3><code>rubric.json</code> &middot; a régua <span style="color:var(--muted);font-weight:400">— 66 linhas, zero código</span></h3>
+    <p>As cinco competências, cada uma com seis âncoras. <strong>É arquivo de dados, não
+    de código.</strong> Isso é decisão de arquitetura: você reescreve a rubrica inteira,
+    roda de novo e compara, sem nunca abrir um <code>.py</code>. Quem ajusta a régua — um
+    professor — não precisa saber programar.</p>
+
+    <h3><code>sample.py</code> &middot; escolhe quem avaliar <span style="color:var(--muted);font-weight:400">— 99 linhas</span></h3>
+    <p><strong>Valida os rótulos.</strong> Confere que <code>soma das 5 competências == nota
+    total</code> em cada linha; o que não bate é descartado e contado. No split de teste:
+    686 linhas, zero descartes.</p>
+    <p><strong>Estratifica.</strong> O corpus é concentrado — a nota 600 aparece 91 vezes,
+    a 680 outras 79. Sorteando 100 redações ao acaso, quase todas seriam medianas e nunca
+    saberíamos se o Jev funciona nos extremos. <strong>Estratificar</strong> é dividir a
+    população em faixas e pegar de cada faixa, de propósito.</p>
+
+<pre><code>aleatória:      600  600  680  600  520  680  600 ...   <span class="cmt">← só o meio</span>
+estratificada:  <span class="hl">0</span>   80   160  ...  600  ...  920  <span class="hl">1000</span>   <span class="cmt">← toda a faixa</span></code></pre>
+
+    <div class="note">
+      <span class="tag">Erro real, pego na primeira execução</span>
+      <p>A primeira versão desta função devolvia só notas de 0 a 440: ela percorria as
+      faixas em ordem e parava ao atingir o total pedido, pegando sempre as mais baixas.
+      O sintoma apareceu na própria saída do script —
+      <code>faixa de notas: 0 a 440</code> — o que é um bom argumento para scripts que
+      imprimem o que fizeram, e não só <em>que</em> fizeram.</p>
+    </div>
+
+    <h3><code>evaluate.py</code> &middot; conversa com o Jev <span style="color:var(--muted);font-weight:400">— 260 linhas</span></h3>
+    <p>O único arquivo que fala com a internet. Cinco funções encadeadas, cada uma fazendo
+    uma coisa só e devolvendo um valor — sem efeitos escondidos.</p>
+
+    <ol class="steps">
+      <li><b><code>carregar_chave()</code></b>de onde vem a credencial, e avisa se o ambiente divergir do arquivo</li>
+      <li><b><code>montar_perguntas()</code></b>rubrica &rarr; objeto <code>questions</code></li>
+      <li><b><code>montar_corpo()</code></b>acrescenta <code>state</code>, que é o texto da redação</li>
+      <li><b><code>chamar()</code></b>HTTP com retentativas e espera crescente</li>
+      <li><b><code>extrair_notas()</code></b>probabilidades &rarr; <code>nota_argmax</code> e <code>nota_esperada</code></li>
+    </ol>
+
+    <p>Isso se chama <strong>função pura</strong>: dada a mesma entrada, sempre a mesma
+    saída. A vantagem prática é que você testa <code>extrair_notas</code> sem internet
+    nenhuma, passando um dicionário na mão — foi exatamente assim que o bug do
+    <code>score</code> foi confirmado.</p>
+
+    <h3><code>compare.py</code> &middot; mede a concordância <span style="color:var(--muted);font-weight:400">— 204 linhas</span></h3>
+    <p>Lê o cache e responde: <strong>o Jev concorda com o humano?</strong> Cinco medidas,
+    porque nenhuma sozinha conta a história:</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>Medida</th><th>O que responde</th><th>Onde engana</th></tr></thead>
+        <tbody>
+          <tr><td><b>QWK</b></td><td>concordância, descontando a sorte</td><td>difícil de interpretar sozinho</td></tr>
+          <tr><td><b>MAE</b></td><td>de quantos pontos ele erra, em média</td><td>não distingue errar pra cima ou pra baixo</td></tr>
+          <tr><td><b>viés</b></td><td>ele erra <b>pra cima</b> ou <b>pra baixo</b>?</td><td>esconde erros que se cancelam</td></tr>
+          <tr><td><b>exata / adj</b></td><td>acertou a faixa? errou por uma só?</td><td>ignora o tamanho do erro grande</td></tr>
+          <tr><td><b>r</b> (Pearson)</td><td>ele <b>ordena</b> bem, mesmo errando a nota?</td><td>fica alto mesmo com a nota toda deslocada</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>QWK</strong> (<em>Quadratic Weighted Kappa</em>) é a medida padrão para
+    correção automática de redação. A ideia: <strong>1,0 é concordância perfeita e 0,0 é o
+    mesmo que chutar</strong>. O &ldquo;quadratic&rdquo; significa que errar por três faixas
+    pesa nove vezes mais que errar por uma — errar feio é muito pior que errar de pouco.</p>
+
+    <p>Por que não usar só &ldquo;% de acerto&rdquo;? Porque a distribuição é concentrada:
+    um modelo que responde <strong>sempre 600</strong> acerta cerca de 13% das redações sem
+    saber nada. Por isso o relatório sempre imprime uma <strong>baseline</strong> — se o Jev
+    não bater o chute constante, ele não está aprendendo nada.</p>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="s9">
+  <div class="col">
+    <h2><span class="num">09</span> O ciclo de uma chamada</h2>
+    <p class="lede">Três das proteções existem porque cada uma delas nos queimou.</p>
+  </div>
+
+  <figure>
+    <svg class="fig" viewBox="0 0 1000 390" role="img" aria-label="Fluxo de uma chamada: para cada redação, se já estiver no cache o script pula sem custo; senão envia POST ao endpoint de avaliação; se a resposta for 429 espera 2, 4 e 8 segundos e reenvia; se for 401, 403 ou vier sem answers, interrompe tudo; se for 200, grava uma linha no cache.">
+      <!-- linha principal -->
+      <rect class="bx" x="40" y="70" width="160" height="60"/>
+      <text class="ttl" x="120" y="95" text-anchor="middle" font-weight="400" font-size="12.5">próxima redação</text>
+      <text class="sub" x="120" y="112" text-anchor="middle">da amostra</text>
+
+      <rect class="bx" x="242" y="70" width="140" height="60"/>
+      <text x="312" y="105" text-anchor="middle" font-size="12.5">está no cache?</text>
+
+      <rect class="ac-bg" x="424" y="70" width="170" height="60"/>
+      <text class="ac mono" x="509" y="93" text-anchor="middle" font-size="12.5" font-weight="600">POST</text>
+      <text class="ac mono" x="509" y="112" text-anchor="middle" font-size="10.5" opacity=".85">/v1/evaluate</text>
+
+      <rect class="bx" x="636" y="70" width="130" height="60"/>
+      <text x="701" y="105" text-anchor="middle" font-size="12.5">resposta?</text>
+
+      <rect class="sg-bg" x="808" y="70" width="150" height="60"/>
+      <text class="sg" x="883" y="93" text-anchor="middle" font-size="12.5" font-weight="600">grava 1 linha</text>
+      <text class="sg mono" x="883" y="112" text-anchor="middle" font-size="10" opacity=".85">resultados.jsonl</text>
+
+      <!-- ramos -->
+      <rect class="bx-d" x="242" y="200" width="140" height="52"/>
+      <text x="312" y="222" text-anchor="middle" font-size="12" opacity=".8">pula</text>
+      <text class="sub" x="312" y="239" text-anchor="middle">custo zero</text>
+
+      <rect class="bx" x="606" y="200" width="180" height="52"/>
+      <text x="696" y="221" text-anchor="middle" font-size="12">espera e tenta de novo</text>
+      <text class="mono sub" x="696" y="239" text-anchor="middle">2 s → 4 s → 8 s</text>
+
+      <rect class="ac-st" x="640" y="300" width="320" height="56" stroke-width="1.4"/>
+      <text class="ac" x="800" y="322" text-anchor="middle" font-size="12.5" font-weight="600">interrompe tudo</text>
+      <text class="ac" x="800" y="341" text-anchor="middle" font-size="11" opacity=".85">credencial recusada, ou <tspan class="mono">answers</tspan> vazio</text>
+
+      <!-- conectores do caminho principal -->
+      <g class="ln" marker-end="url(#ar)">
+        <path d="M200,100 L242,100"/>
+        <path d="M382,100 L424,100"/>
+        <path d="M594,100 L636,100"/>
+        <path d="M766,100 L808,100"/>
+        <path d="M312,130 L312,200"/>
+        <path d="M660,130 L660,200"/>
+        <path d="M606,226 L509,226 L509,130"/>
+      </g>
+      <!-- ramo fatal: x=830 fica à direita da caixa "espera" (termina em 786), sem cruzá-la -->
+      <g class="ac-st" stroke-width="1.5" marker-end="url(#ar-a)">
+        <path d="M740,130 L740,170 L830,170 L830,300"/>
+      </g>
+
+      <g class="lbl">
+        <text x="403" y="92" text-anchor="middle">não</text>
+        <text x="787" y="92" text-anchor="middle">200</text>
+        <text x="320" y="170">sim</text>
+        <text x="668" y="170">429</text>
+        <text class="ac" x="840" y="204" opacity=".95">401 · 403</text>
+        <text x="556" y="243" text-anchor="middle">reenvia</text>
+      </g>
+    </svg>
+    <figcaption><b>O caminho feliz é a linha de cima.</b> Tudo abaixo é proteção: o desvio
+    do cache poupa dinheiro, o laço do <code>429</code> sobrevive à sobrecarga do provedor,
+    e a caixa vermelha impede o pior caso — seguir produzindo linhas erradas.</figcaption>
+  </figure>
+
+  <div class="col">
+    <div class="tw">
+      <table>
+        <thead><tr><th>Proteção</th><th>O que evita</th></tr></thead>
+        <tbody>
+          <tr><td>Para na 1ª falha de <code>401/403</code></td><td>queimar 100 chamadas repetindo o mesmo erro de credencial</td></tr>
+          <tr><td>Para se <code>answers</code> vier vazio</td><td>gravar cache vazio e produzir métricas silenciosamente erradas</td></tr>
+          <tr><td>Espera crescente no <code>429</code></td><td>perder 61 de 100 chamadas quando o provedor está sobrecarregado</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p><strong>Espera crescente</strong> — o nome técnico é <em>backoff exponencial</em>.
+    Ao receber &ldquo;estou ocupado&rdquo;, espera 2 s e tenta de novo; se falhar, 4 s;
+    depois 8 s. Dobrar a espera evita que todos os clientes voltem no mesmo instante e
+    derrubem o serviço outra vez.</p>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="s10">
+  <div class="col">
+    <h2><span class="num">10</span> Padrões de programação usados</h2>
+    <p class="lede">Termos que aparecem em qualquer projeto sério, aqui em contexto real.</p>
+
+    <ol class="steps">
+      <li><b>Pipeline</b>Cada etapa recebe a saída da anterior e não sabe nada das outras.
+      <code>sample.py</code> não sabe que o Jev existe; <code>compare.py</code> não sabe o
+      que é HTTP. Você troca o modelo inteiro sem tocar em dois dos três scripts.</li>
+      <li><b>Cache-aside</b>Antes de gastar uma chamada, veja se a resposta já está no
+      disco. É o que permite rodar <code>compare.py</code> cinquenta vezes de graça
+      enquanto se ajusta a análise.</li>
+      <li><b>Idempotência</b>Rodar duas vezes dá o mesmo resultado da primeira, sem
+      estragar nada. <code>evaluate.py</code> é idempotente porque pula o que já está em
+      cache — você pode interromper no meio e rodar de novo sem medo.</li>
+      <li><b>JSONL</b><em>JSON Lines</em>: um JSON completo por linha, em vez de um array
+      gigante. Permite gravar incrementalmente e não perder o trabalho se travar na redação
+      73 — um array só é válido quando fechado; JSONL é válido a cada linha.</li>
+      <li><b>Separação dados/lógica</b>A rubrica em JSON, não em Python.</li>
+      <li><b>Fail-fast</b>Parar no primeiro sinal de problema em vez de seguir produzindo
+      lixo. O oposto é o que mais dói: um pipeline que roda &ldquo;com sucesso&rdquo; e
+      entrega números errados.</li>
+    </ol>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="s11">
+  <div class="col">
+    <h2><span class="num">11</span> O que os números dizem hoje</h2>
+    <p class="lede">Esta seção é a <strong>etapa 5</strong> do workshop, e os números estão lá
+    de propósito.</p>
+
+    <div class="note">
+      <span class="tag">Spoiler guardado</span>
+      <p>Os resultados do Jev contra os corretores humanos — QWK por competência, viés,
+      a baseline de chutar sempre 600 e o limiar de revisão humana — você vai <em>medir</em>,
+      não ler. Rode:</p>
+<pre><code>python3 compare.py --cache referencia/resultados-referencia-v1.jsonl --sample sample.jsonl</code></pre>
+      <p>e leia a saída junto com <code>etapas/05-metricas.md</code>. Descobrir que o
+      modelo empilha 85 de 100 redações num nível só tem um efeito que ler a tabela
+      pronta não tem.</p>
+    </div>
+
+    <p>Duas coisas sobre o método, que valem antes de qualquer número: a medição é
+    <em>zero-shot</em>, com rubrica escrita à mão — modelos treinados no Essay-BR
+    reportam QWK mais alto. E n=100 dá ordem de grandeza, não número final.</p>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="s12">
+  <div class="col">
+    <h2><span class="num">12</span> Cartão de memorização</h2>
+    <p class="lede">Se você decorar só esta seção, reconstrói o resto.</p>
+
+    <div class="card">
+      <h3>LAB Jev em uma tela</h3>
+<pre><code><span class="k">JEV</span>       avaliador com prancheta, não escritor.
+          Responde perguntas <span class="v">TIPADAS</span>. Não gera texto. ~0,5 s.
+
+<span class="k">CHAMADA</span>   POST <span class="v">/v1/evaluate</span>          <span class="d">← NÃO /v1/chat/completions</span>
+          { model, <span class="v">state</span>, questions }
+                      <span class="d">↑</span>
+                 <span class="d">o TEXTO vai aqui — não em "messages"</span>
+
+<span class="k">PERGUNTA</span>  { type: "score", instructions, criteria: [<span class="v">6 âncoras</span>] }
+          tipos: boolean | choice | score
+          <span class="d">"boolean" no gateway = "noul" na doc nativa</span>
+
+<span class="k">RESPOSTA</span>  { answers: { c1: { score, probabilities, confidence } } }
+                                <span class="d">↑</span>
+                     <span class="v">VALOR ESPERADO, não o nível!</span>
+                     <span class="d">2,49 com pico em 2 → média ponderada</span>
+
+<span class="k">CONVERSÃO</span> nível (0–5) <span class="v">× 40</span> = nota (0–200) → soma 5 = total (0–1000)
+
+<span class="k">PIPELINE</span>  sample.py → sample.jsonl → evaluate.py ⇄ Gateway
+          → resultados.jsonl → compare.py
+           <span class="d">escolhe        quem          pergunta      cache    mede</span>
+
+<span class="k">REGRA</span>     compare.py <span class="v">NUNCA</span> chama a API. Só lê o cache.</code></pre>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<section id="s13">
+  <div class="col">
+    <h2><span class="num">13</span> Experimentos</h2>
+    <p class="lede">Do mais seguro ao mais revelador. Nenhum custa mais que centavos.</p>
+
+    <h3>1. Veja o valor esperado nascer</h3>
+    <p>Sem chamar nada. Os dois números devem sair iguais:</p>
+<pre><code>python3 -c "
+import json
+r = json.loads(open('referencia/resultados-referencia-v1.jsonl').readline())
+p = r['jev']['c1']['probabilities']
+print('soma ponderada:', sum(int(k)*v for k,v in p.items()))
+print('score do Jev:  ', r['jev']['c1']['score_bruto'])
+"</code></pre>
+    <p>Saem <code>2.49</code> e <code>2.49</code>. Se você entendeu por quê, entendeu a
+    seção 06.</p>
+
+    <h3>2. Quebre a rubrica de propósito</h3>
+    <p>Inverta a ordem das seis âncoras de <code>c1</code> no <code>rubric.json</code>
+    (o nível 0 vira o nível 5), rode com <code>--sample sample-mini.jsonl --cache resultados-invertido.jsonl</code>. <strong>Previsão:</strong> o QWK de <code>c1</code> fica
+    fortemente negativo. Se ficar, você entendeu que é a <em>ordem</em> da lista que
+    carrega o significado.</p>
+
+    <h3>3. Prove que o cache funciona</h3>
+    <p>Rode <code>evaluate.py --limit 10</code> duas vezes seguidas.
+    <strong>Previsão:</strong> a segunda diz &ldquo;pulado&rdquo; dez vezes e não gasta
+    nada.</p>
+
+    <h3>4. Ache o limiar de revisão humana</h3>
+    <p>Este é o mais consequente, porque decide se o sistema economiza trabalho ou cria
+    mais. Rodando sobre as 500 decisões já em cache:</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th class="n">Limiar de confiança</th><th class="n">Decisões abaixo</th><th class="n">Fatia</th></tr></thead>
+        <tbody>
+          <tr><td class="n">0,50</td><td class="n">18 / 500</td><td class="n">4%</td></tr>
+          <tr><td class="n">0,60</td><td class="n">53 / 500</td><td class="n">11%</td></tr>
+          <tr><td class="n">0,70</td><td class="n">205 / 500</td><td class="n">41%</td></tr>
+          <tr><td class="n">0,80</td><td class="n">344 / 500</td><td class="n">69%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Subir o limiar de 0,60 para 0,70 salta de 11% para 41% das decisões na fila humana.
+    <strong>Essa é a curva que decide a viabilidade do produto</strong> — e ela não tem nada
+    a ver com o modelo, só com o quanto de erro você aceita.</p>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>LAB Jev &middot; WebTech Labs. Corpus <b>Essay-BR</b> (Marinho, Anchiêta &amp; Moura,
+  2021), 4.570 redações do ensino médio corrigidas por profissionais segundo os critérios
+  do ENEM. Modelo <b>typesafe-ai/jev</b> via Vercel AI Gateway. Números medidos em 100
+  redações do split de teste, custo total abaixo de um centavo de dólar.</p>
+  <p style="margin-top:12px">Próximo passo com maior retorno: recalibrar as âncoras de
+  <code>rubric.json</code>.</p>
+</footer>
