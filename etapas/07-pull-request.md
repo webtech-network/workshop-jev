@@ -89,14 +89,15 @@ Quase ninguém escreve.
 
 ## 7.3 Comite
 
-> **Nas trilhas web, você pode pular o Git inteiro.** A interface do GitHub faz
-> branch, commit e pull request de uma vez: abra o seu fork, clique no arquivo,
-> no ícone de lápis, edite, e em **Commit changes** escolha **"Create a new
-> branch for this commit and start a pull request"**. Pule para a
-> [seção 7.4](#74-empurre-e-abra-o-pr) e use só a parte do `gh`/navegador.
+> **Codespaces:** o Git já vem autenticado no seu fork — siga esta seção
+> normalmente.
 >
-> Esse caminho funciona sempre, inclusive se a conexão do Replit com o GitHub
-> der trabalho. O resto desta seção é para quem está usando Git.
+> **Replit:** se o push travar porque a conta do GitHub não está conectada,
+> entregue pela interface do GitHub. A ordem importa (o `NOTAS.md` ainda não
+> existe lá): primeiro cole o `rubric.json` criando a branch e o PR, **depois**
+> crie o `NOTAS.md` dentro dessa mesma branch, e o PR se atualiza sozinho. O
+> passo a passo está no
+> [SETUP-WEB.md](../SETUP-WEB.md#replit-se-o-push-der-trabalho-vá-pela-interface-do-github).
 
 Veja exatamente o que mudou na rubrica:
 

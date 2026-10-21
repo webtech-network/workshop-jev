@@ -156,7 +156,8 @@ cd workshop-jev
 ```
 
 > **Rode tudo daqui.** Os scripts procuram `rubric.json` e `sample.jsonl` no
-> diretório atual. Se você rodar de outra pasta, eles não acham nada.
+> diretório atual. Se você rodar de outra pasta, eles não acham nada —
+> `cd "$(git rev-parse --show-toplevel)"` volta para a raiz.
 
 ---
 
@@ -280,7 +281,7 @@ entra no seu fork.
 | `cat`, `sed` ou `ls -la` não existem | Idem | Use o **Git Bash**. |
 | `UnicodeDecodeError` ao ler a chave | `.env.local` gravado em UTF-16 pelo PowerShell | Recrie o arquivo no Git Bash. |
 | `AI_GATEWAY_API_KEY ausente` | `.env.local` não existe, tem nome errado (`.env.local.txt`) ou está vazio | Veja o passo 5. Confirme com `ls -a`. |
-| `cache nao encontrado` | Você rodou de outra pasta | `cd` para a raiz do repositório clonado. |
+| `cache nao encontrado` | Você rodou de outra pasta | `cd "$(git rev-parse --show-toplevel)"` |
 | `fatal: not a git repository` | Idem | `cd workshop-jev` |
 | Git pede "Password" e recusa | Senha de conta não funciona | Passo 3: `gh auth login` ou use um token. |
 | `Permission denied (publickey)` | Clone por SSH sem chave configurada | Clone por HTTPS: `https://github.com/...`, não `git@github.com:...`. |

@@ -13,6 +13,6 @@
   },
   "postCreateCommand": "python3 verificar.py || true",
   "postAttachCommand": {
-    "boas-vindas": "echo '\\nWorkshop JEV pronto. Comece por: cat SETUP-WEB.md\\nA chave da API vai em .env.local (cp .env.example .env.local).\\n'"
+    "boas-vindas": "printf '\\nWorkshop JEV pronto. Comece por: cat SETUP-WEB.md\\nA chave da API vai em .env.local (cp .env.example .env.local).\\n\\n'"
   }
 }

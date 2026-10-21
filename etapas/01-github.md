@@ -76,10 +76,13 @@ git remote add upstream https://github.com/webtech-network/workshop-jev.git
 ```
 
 > **Trilhas web:** no Codespaces o Git já vem autenticado, então os comandos
-> abaixo funcionam direto. No Replit, o push exige conectar a sua conta do
-> GitHub — e, se isso der trabalho, você entrega o pull request pela interface
-> do GitHub, sem Git nenhum. O [SETUP-WEB.md](../SETUP-WEB.md#entregar-o-pull-request-sem-usar-git)
-> mostra como, e a [etapa 7](07-pull-request.md) retoma o assunto.
+> abaixo funcionam direto. No Replit, confirme antes que você rodou os
+> `git config --global user.name/user.email` do
+> [SETUP-WEB.md](../SETUP-WEB.md#b4-diga-ao-git-quem-você-é) — sem eles o
+> commit abaixo para com *"Please tell me who you are"*. E se o push exigir
+> conectar a conta do GitHub e isso travar, você entrega o pull request pela
+> interface do GitHub, sem Git nenhum; a [etapa 7](07-pull-request.md) retoma
+> o assunto.
 
 ---
 

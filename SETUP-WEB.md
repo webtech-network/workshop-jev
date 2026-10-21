@@ -24,9 +24,12 @@ a instalação local, veja o [SETUP.md](SETUP.md).
 | Terminal | painel **Shell** | terminal do VS Code |
 
 **Não sabe escolher?** Vá de **Codespaces**: você já precisa da conta do GitHub
-para entregar o pull request, o Git já vem autenticado, e a franquia gratuita é
-folgada para um workshop de 3 h. Vá de **Replit** se quiser usar a IA integrada
-durante os exercícios.
+para entregar o pull request, o Git já vem autenticado, e a franquia gratuita
+está documentada (120 h/mês numa conta pessoal Free, e este workshop consome
+cerca de 6 h dela).
+
+Vá de **Replit** se quiser a IA integrada durante os exercícios — o
+[IA.md](IA.md) tem as regras e os prompts.
 
 > ⚠️ **Sobre a franquia do Replit.** O plano gratuito (Starter) funciona por
 > créditos de agente e de nuvem, e a Replit não publica os limites exatos na
@@ -122,9 +125,27 @@ O `evaluate.py` lê a chave da variável de ambiente quando não há `.env.local
 o Replit expõe cada Secret como variável de ambiente. Não é preciso mudar nada
 no código.
 
-## B.4 Verifique
+## B.4 Diga ao Git quem você é
 
-Abra o painel **Shell** (não o Console) e digite:
+O Codespaces herda isso da sua conta do GitHub; o Replit não. Sem estes dois
+comandos, o seu primeiro `git commit` para com *"Please tell me who you are"*.
+
+No painel **Shell**:
+
+```bash
+git config --global user.name "Seu Nome"
+```
+
+```bash
+git config --global user.email "seu-email@exemplo.com"
+```
+
+Use o **mesmo e-mail da sua conta do GitHub**. Se já estiverem configurados,
+rodar de novo não faz mal.
+
+## B.5 Verifique
+
+Ainda no painel **Shell** (não no Console):
 
 ```bash
 python3 verificar.py
@@ -156,24 +177,51 @@ Esperado: as tabelas de métricas, começando com `100 redacoes avaliadas`.
 
 ---
 
-## Entregar o pull request sem usar Git
+## Como entregar o pull request (etapa 7)
 
-A etapa 7 pede um pull request. Nas trilhas web, o caminho mais confiável
-**não usa Git nenhum** — é a interface do próprio GitHub:
+Depende da trilha.
 
-1. Abra o seu fork no navegador.
-2. Clique no arquivo (`rubric.json` ou `NOTAS.md`) e no ícone de **lápis**.
-3. Edite e clique em **Commit changes**.
-4. Escolha **"Create a new branch for this commit and start a pull request"**.
-5. Nomeie a branch `rubrica-SEU-USUARIO` e confirme.
+### Codespaces: use o Git normalmente
 
-Isso cria branch, commit e pull request de uma vez. A [etapa 7](etapas/07-pull-request.md)
-detalha o que escrever.
+O Git já vem autenticado no seu fork, então o caminho é o da
+[etapa 7](etapas/07-pull-request.md):
 
-> **Por que não `git push` do ambiente web?** Dá para fazer, e a etapa 7 explica
-> como. Mas no Replit depende de conectar a conta do GitHub, e num Codespace
-> aberto a partir de um fork o `gh pr create` às vezes não enxerga o
-> repositório de origem. A interface web funciona sempre.
+```bash
+git push -u origin rubrica-SEU-USUARIO
+```
+
+Depois abra o seu fork no navegador e clique em **"Compare & pull request"**.
+
+> Prefira esse botão ao `gh pr create`: num Codespace aberto a partir de um
+> fork, o `gh` às vezes não enxerga o repositório de origem e reclama. O botão
+> abre o mesmo pull request.
+
+### Replit: se o push der trabalho, vá pela interface do GitHub
+
+No Replit o push depende de conectar a sua conta do GitHub ao Repl. Se isso
+travar, dá para entregar **sem Git nenhum** — mas atenção à ordem, porque o
+`NOTAS.md` ainda não existe no GitHub:
+
+**Primeiro, a rubrica (cria a branch e o PR de uma vez):**
+
+1. No Replit, abra o `rubric.json` e copie o conteúdo inteiro.
+2. No navegador, abra o **seu fork** → clique em `rubric.json` → ícone de
+   **lápis**.
+3. Apague tudo e cole a sua versão.
+4. **Commit changes** → escolha **"Create a new branch for this commit and
+   start a pull request"** → nomeie a branch `rubrica-SEU-USUARIO`.
+5. Na tela do pull request, confira que a base é
+   `webtech-network/workshop-jev` na branch `main`. Pode enviar.
+
+**Depois, o `NOTAS.md` (vai para a mesma branch, e o PR se atualiza sozinho):**
+
+6. No seu fork, troque a branch no seletor de `main` para
+   `rubrica-SEU-USUARIO`.
+7. **Add file** → **Create new file** → nome `NOTAS.md` → cole o seu texto.
+8. **Commit directly to the `rubrica-SEU-USUARIO` branch.**
+
+O pull request aberto no passo 5 incorpora esse commit automaticamente. A
+[etapa 7](etapas/07-pull-request.md) detalha o que escrever no `NOTAS.md`.
 
 ---
 
@@ -181,9 +229,9 @@ detalha o que escrever.
 
 | Sintoma | Causa | Solução |
 |---|---|---|
-| `python3: command not found` no Replit | você está no **Console**, não no **Shell** | abra o painel Shell |
+| `python3: command not found` no Replit | o Repl ficou sem Python, ou você está no **Console** em vez do **Shell** | confira que é o painel **Shell**; se persistir, adicione Python pelo painel de dependências do Replit |
 | `AI_GATEWAY_API_KEY ausente` no Replit | Secret com nome errado, ou criado depois do Shell abrir | confira o nome exato e **reabra o Shell** |
-| `cache nao encontrado` | você está em outra pasta | `cd ~/workspace/workshop-jev` (Replit) ou `cd /workspaces/workshop-jev` (Codespaces) |
+| `cache nao encontrado` | você está em outra pasta | `cd "$(git rev-parse --show-toplevel)"` — funciona nas três trilhas |
 | Não consigo dar push | você abriu o repositório da WebTech, não o seu fork | confira a URL; refaça o fork |
 | `429 rate_limit_exceeded` | a turma está chamando a API junto | normal; espere e rode de novo, o cache retoma |
 | O Codespace parou sozinho | ele hiberna após ~30 min parado | reabra pelo github.com; os arquivos continuam lá |

@@ -32,7 +32,7 @@ O material roda em três ambientes, com **os mesmos comandos** nas 7 etapas:
 
 | Trilha | Onde a chave fica | Instalação | Risco |
 |---|---|---|---|
-| **GitHub Codespaces** | `.env.local` | nenhuma | franquia documentada: 120 h/mês por conta pessoal Free, e um workshop de 3 h num contêiner de 2 núcleos consome ~6 h dessa cota |
+| **GitHub Codespaces** | `.env.local` | nenhuma | franquia documentada: 120 h/mês por conta pessoal Free, e um workshop de 3 h num contêiner de 2 núcleos consome ~6 h dessa cota. **É a trilha padrão do material** por isso — se preferir o Replit na frente, troque a recomendação no `README.md` e no `SETUP-WEB.md` |
 | **Replit** | **Secrets** | nenhuma | **franquia não documentada** — veja abaixo |
 | **Local** | `.env.local` | Python + Git | PCs de laboratório podem não permitir |
 
@@ -40,16 +40,53 @@ Os arquivos que sustentam isso: [`.devcontainer/devcontainer.json`](.devcontaine
 (Codespaces), [`.replit`](.replit) e o `verificar.py`, que detecta sozinho em
 qual ambiente está e dá a dica certa.
 
+**O que foi testado de verdade, e o que não foi:**
+
+| | Situação |
+|---|---|
+| `verificar.py` nos 3 ambientes | testado, simulando as variáveis de cada um |
+| A imagem do devcontainer | testada no Docker local: Python, Git e o `verificar.py` rodam nela |
+| O ciclo completo do Codespaces | **não testado** — exigiria abrir um Codespace de verdade |
+| A trilha Replit inteira | **não testada** — veja o preflight abaixo |
+
 > ⚠️ **O risco do Replit, declarado.** O plano gratuito (Starter) funciona por
 > créditos de agente e de nuvem, e a Replit **não publica os limites na página
 > de preços** — ela lista só Core, Pro e Enterprise. Não dá para afirmar que
 > uma turma inteira atravessa 3 h no plano gratuito.
 >
-> O que fazer: **teste com uma conta gratuita nova, cronometrando**, antes de
-> prometer essa trilha à turma. Se não couber, as opções são a trilha
-> Codespaces (limite conhecido e folgado) ou um plano pago/educacional da
-> Replit. Em qualquer cenário o material é o mesmo — a troca de trilha não
-> custa nada no meio do workshop.
+> O que fazer: rode o **preflight abaixo** com uma conta gratuita nova. Se não
+> couber, as opções são a trilha Codespaces (limite conhecido e folgado) ou um
+> plano pago/educacional da Replit. Em qualquer cenário o material é o mesmo —
+> a troca de trilha não custa nada no meio do workshop.
+
+### Preflight do Replit — 15 minutos, faça antes de prometer essa trilha
+
+A trilha Replit **não foi testada de ponta a ponta**: ela foi escrita a partir
+da documentação da Replit, não de uma execução real. Rode isto com uma **conta
+gratuita nova**, de preferência de um PC da própria PUC:
+
+1. **Importe o seu fork** em `replit.com/import`.
+2. No painel **Shell**, confirme que há Python:
+   ```
+   python3 --version && python3 verificar.py
+   ```
+   Deve imprimir `(Replit)` na primeira linha. Se `python3` não existir, o Repl
+   ficou sem Python — adicione pelo painel de dependências e **anote**, porque
+   o aluno vai topar com isso.
+3. **Crie o Secret** `AI_GATEWAY_API_KEY`.
+4. **Reabra o Shell** e rode `python3 verificar.py` de novo. A seção 4 tem de
+   dizer `fonte: variavel de ambiente (Secrets)`.
+5. Faça **uma** chamada real:
+   ```
+   python3 evaluate.py --sample sample-mini.jsonl --limit 1
+   ```
+6. **Veja quanto de crédito isso consumiu** e extrapole para 3 h × o tamanho da
+   turma. Esse número é o que decide se a trilha Replit é viável.
+
+Teste também, no mesmo Repl, se o `git push` funciona depois de conectar a
+conta do GitHub. Se não funcionar com facilidade, instrua a turma a entregar o
+pull request pela interface do GitHub — o `SETUP-WEB.md` já traz o passo a
+passo, na ordem certa (rubrica primeiro, `NOTAS.md` depois, na mesma branch).
 
 ### Teste na PUC antes do dia
 
